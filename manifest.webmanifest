@@ -1,0 +1,19 @@
+{
+  "name": "まなびのにわ",
+  "short_name": "まなびのにわ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#e9efdc",
+  "theme_color": "#eaf2dc",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
