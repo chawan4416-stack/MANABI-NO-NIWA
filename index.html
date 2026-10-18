@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eaf2dc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>まなびのにわ</title>
+<style>
+:root{font-family:"Hiragino Maru Gothic ProN","Yu Gothic",system-ui,sans-serif;color:#42513a;background:#e9efdc;--green:#6d966d;--cream:#fffaf0;--wood:#b47a4c}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh}button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:4px solid #f4a54d;outline-offset:3px}
+#app{min-height:100dvh;padding:16px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 18% 15%,#fff7d8 0,transparent 34%),linear-gradient(#dcebdc 0%,#f5efd6 70%,#d5e4c5 100%)}
+.stage{position:relative;width:min(100%,1100px);min-height:min(710px,calc(100dvh - 32px));padding:20px 24px 26px;border:8px solid #fff9e8;border-radius:35px;overflow:hidden;box-shadow:0 16px 45px #5a765244;background:linear-gradient(#cde9ed 0%,#e6f3e8 47%,#d6e7b4 48%,#bcd69b 100%)}
+.stage:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.38;background:radial-gradient(circle at 15% 77%,#f6dca5 0 10%,transparent 11%),radial-gradient(circle at 87% 76%,#e2c5a4 0 10%,transparent 11%),radial-gradient(circle at 55% 85%,#f3e6c4 0 18%,transparent 19%)}
+.stage>*{position:relative;z-index:1}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:clamp(20px,3vw,31px);font-weight:900;letter-spacing:.08em;color:#3e6948;text-shadow:0 2px #fff}.mini{border:2px solid #f4e6c6;background:#fffcf2;border-radius:99px;padding:9px 16px;color:#527456;font-weight:800}.center{text-align:center}.lead{font-size:clamp(17px,2.5vw,26px);font-weight:800}.sub{font-size:clamp(13px,1.7vw,18px);line-height:1.7}.title{font-size:clamp(24px,4vw,42px);margin:14px 0 8px;color:#47704d;text-shadow:0 2px #fff}
+.card{background:#fffdf5ed;border:4px solid #fff9ea;border-radius:28px;box-shadow:0 8px 20px #53714a20;padding:20px;max-width:860px;margin:20px auto}
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:28px auto 12px;max-width:930px}
+.tile{min-height:230px;border:5px solid #fdf2d7;border-radius:27px;background:linear-gradient(#fff9ed,#f5e8ce);box-shadow:0 7px #b98b5b,0 13px 15px #5c6d4d25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#5b6044;font-size:clamp(21px,2.8vw,30px);font-weight:900}
+.tile .pic{font-size:clamp(65px,9vw,108px);filter:drop-shadow(0 4px 3px #9875)}.tile small{font-size:14px;font-weight:500}
+.bunny{font-size:76px;line-height:1.1;filter:drop-shadow(0 3px 2px #6e8a7b40)}
+.bubble{display:inline-block;background:#fffef8;border:3px solid #e9e0c5;border-radius:24px;padding:13px 22px;font-weight:800;font-size:clamp(17px,2.4vw,24px);line-height:1.5}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-top:20px}
+.primary,.secondary,.choice{border-radius:20px;border:3px solid #f8edd5;min-height:65px;padding:12px 22px;font-size:clamp(18px,2.5vw,25px);font-weight:900;box-shadow:0 5px #a37b51}
+.primary{background:#80a96c;color:#fff}.secondary{background:#f3d49a;color:#5c573c}.choice{background:#fffaf0;color:#4d684c;min-width:110px}
+.choice[aria-pressed=true]{background:#e4f0c9;border-color:#72a65b;box-shadow:0 3px #72a65b}.choice:disabled{opacity:.55}
+.big{font-size:clamp(38px,7vw,75px)}.grid{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:16px auto}.counter{font-size:24px;font-weight:900;color:#55785b}
+.progress{display:flex;justify-content:center;gap:8px;margin:10px auto}.dot{width:13px;height:13px;border-radius:50%;background:#ffffffb8;border:2px solid #8cac83}.dot.on{background:#6d9a6b}
+.scene{font-size:clamp(65px,12vw,135px);margin:15px auto}.maze{display:grid;grid-template-columns:repeat(4,minmax(55px,95px));gap:5px;justify-content:center;margin:12px auto}.cell{height:clamp(57px,9vw,86px);background:#f4e9cc;border:3px solid #e2cfa9;border-radius:14px;font-size:33px}.cell.path{background:#d2eab5}.cell:disabled{cursor:default}.hint{min-height:35px;color:#a05c3b;font-weight:800;font-size:19px}
+.shop-items{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.shop-item{padding:16px 5px;border-radius:20px;border:3px solid #e8d7b5;background:#fff9e8;font-size:clamp(17px,2.4vw,24px);font-weight:800}.shop-item .pic{display:block;font-size:clamp(50px,7vw,85px)}.shop-item.selected{border-color:#70a765;background:#eaf6df}
+.footer{margin:22px auto 0;text-align:center;font-size:14px;color:#617457}.print-area{display:none}
+@media(max-width:690px){.stage{padding:13px;min-height:calc(100dvh - 20px)}#app{padding:10px}.home-grid{gap:10px}.tile{min-height:170px}.tile .pic{font-size:50px}.tile small{display:none}.card{padding:13px}.shop-items{gap:5px}.shop-item{padding:9px 3px}}
+@media(max-width:480px){.home-grid{grid-template-columns:1fr}.tile{min-height:110px;flex-direction:row}.tile .pic{font-size:55px}}
+@media print{@page{size:A4;margin:14mm}body{background:white;color:#222}#app{display:none!important}.print-area{display:block!important;font-family:"Yu Gothic",sans-serif}.print-area h1{font-size:26pt;text-align:center}.print-area h2{font-size:17pt;margin-top:24px}.print-area .trace{font-size:76pt;color:#bbb;letter-spacing:20px;border-bottom:2px solid #ddd}.print-area .apples{font-size:38pt;letter-spacing:16px}.print-area .writing{height:80px;border-bottom:2px dashed #bbb}.print-area .printfoot{margin-top:55px;font-size:12pt}}
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+<section class="print-area" aria-label="復習プリント">
+<h1>🐰 まなびのにわ　りんごのおてがみ</h1>
+<p>なまえ：＿＿＿＿＿＿＿＿＿＿＿＿　ひづけ：＿＿＿＿＿＿＿＿</p>
+<h2>① 「り」を ゆびで なぞってから、えんぴつで かこう</h2>
+<div class="trace">り　り　り</div><div class="writing"></div><div class="writing"></div>
+<h2>② りんごは なんこ？ かぞえて まるを つけよう</h2>
+<div class="apples">🍎 🍎 🍎</div>
+<p style="font-size:25pt">１　　２　　３　　４　　５</p>
+<h2>③ うさぎさんに りんごを ３こ かいて あげよう</h2>
+<div style="height:150px;border:2px solid #bbb;border-radius:15px"></div>
+<p class="printfoot">できたね！　おうちのひとと りんごを かぞえてみよう。</p>
+</section>
+<script>
+(function(){
+'use strict';
+var app=document.getElementById('app');
+var screen='home',step=0,apples=0,maze=0,selected=0,shopCount=1,feedback='',completed=false;
+try{completed=localStorage.getItem('manabi-first-adventure')==='yes'}catch(e){}
+var prompts=['「り」を みつけよう','りんごを 3こ あつめよう','うさぎさんと みちを すすもう','おみせに りんごを とどけよう','「り」を なぞって みよう','やったね！'];
+function el(s){return s}
+function speak(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
+function header(back){return '<header class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="'+(back||'home')+'">⌂ もどる</button></header>'}
+function shell(content){app.innerHTML='<section class="stage">'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})})}
+function navhome(){screen='home';feedback='';render()}
+function start(){screen='adventure';step=0;apples=0;maze=0;feedback='';render();speak('うさぎさんと りんごを とどけよう')}
+function go(n){step=n;feedback='';render();speak(prompts[n])}
+function render(){
+if(screen==='home'){shell('<div class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="voice">🔊 おはなし</button></div><div class="center"><div class="bunny">🐰</div><h1 class="title">わかると、あそびが ひろがる。</h1><div class="bubble">きょうは なにして あそぼうか？</div></div><div class="home-grid"><button class="tile" data-action="start"><span class="pic">🗺️</span>ぼうけん<small>いっしょに すすもう</small></button><button class="tile" data-action="free"><span class="pic">🏡</span>じゆうあそび<small>すきな あそびを えらぼう</small></button><button class="tile" data-action="family"><span class="pic">👨‍👩‍👧</span>かぞく<small>おうちでも あそぼう</small></button></div><div class="footer">🐝 🌼 🌷 🌼 🦋</div>');return}
+if(screen==='adventure'){var body='',bar='<div class="progress">'+[0,1,2,3,4,5].map(function(i){return '<span class="dot '+(i<=step?'on':'')+'"></span>'}).join('')+'</div>'; 
+if(step===0)body='<div class="scene">🐰 🍎</div><p class="sub">りんごの「り」は どれかな？</p><div class="grid">'+['こ','り','い','に'].map(function(x){return '<button class="choice" data-action="letter" data-value="'+x+'">'+x+'</button>'}).join('')+'</div>';
+if(step===1)body='<div class="scene">🌳 🐰</div><p class="sub">りんごを ひとつずつ タッチしてね</p><div class="grid">'+[1,2,3].map(function(i){return '<button class="choice big" data-action="apple" data-value="'+i+'" '+(i<=apples?'disabled':'')+'>'+(i<=apples?'🧺':'🍎')+'</button>'}).join('')+'</div><div class="counter">'+apples+' / 3 こ</div>';
+if(step===2){var cells=['🐰','🌼','🌳','🌳','➡️','🌳','🌳','🌳','➡️','➡️','➡️','🌳','🌳','🌳','🏪','🌳'];var path=[0,4,8,9,10,14];body='<p class="sub">ひかる みちを じゅんばんに タッチしよう</p><div class="maze">'+cells.map(function(c,i){var p=path.indexOf(i),allowed=p>=0&&p<=maze;return '<button class="cell '+(p>=0?'path':'')+'" data-action="maze" data-value="'+i+'" '+(allowed?'':'disabled')+'>'+(p>=0&&p<maze?'👣':c)+'</button>'}).join('')+'</div>'}
+if(step===3)body='<div class="scene">🐿️ 🏪 🐰</div><p class="sub">りんごを なんこ とどけたかな？</p><div class="grid">'+[1,2,3,4,5].map(function(n){return '<button class="choice" data-action="deliver" data-value="'+n+'">'+n+'</button>'}).join('')+'</div>';
+if(step===4)body='<div class="scene">🍎 🐰</div><p class="sub">ゆびで「り」を なぞってみよう</p><canvas id="trace" width="560" height="190" style="width:min(100%,560px);height:190px;border:3px dashed #b5c8a3;border-radius:20px;background:#fffef5;touch-action:none" aria-label="り の なぞりがき"></canvas><div class="actions"><button class="secondary" data-action="clear">もういちど</button><button class="primary" data-action="finish">かけたよ！</button></div>';
+if(step===5)body='<div class="scene">🎉 🐰 🍎</div><p class="lead">りんごを とどけられたね！</p><p class="sub">おみせやさんでも りんごを かぞえてみよう</p><div class="actions"><button class="primary" data-action="free">おみせやさんへ</button><button class="secondary" data-action="home">おうちへ</button></div>';
+shell(header('home')+'<div class="center"><h1 class="title">🍎 はじめての ぼうけん</h1>'+bar+'<div class="card"><div class="lead">'+prompts[step]+'</div>'+body+'<div class="hint" role="status">'+feedback+'</div></div></div>');
+if(step===4)initCanvas();return}
+if(screen==='free'){shell(header()+'<div class="center"><h1 class="title">🌷 じゆうあそびのにわ</h1><div class="bubble">すきな あそびを えらんでね！</div><div class="home-grid"><button class="tile" data-action="shop"><span class="pic">🍎</span>おみせやさん</button><button class="tile" data-action="soon"><span class="pic">✉️</span>おてがみ</button><button class="tile" data-action="soon"><span class="pic">🧩</span>めいろ</button></div><p class="sub">おみせやさんは さいしょから あそべるよ</p></div>');return}
+if(screen==='shop'){shell(header('free')+'<div class="center"><h1 class="title">🏪 おみせやさん</h1><div class="bubble">🐿️ いらっしゃいませ！ なにに する？</div><div class="card"><div class="shop-items">'+[['🍎','りんご'],['🍌','ばなな'],['🍊','みかん']].map(function(a,i){return '<button class="shop-item '+(selected===i?'selected':'')+'" data-action="select" data-value="'+i+'"><span class="pic">'+a[0]+'</span>'+a[1]+'</button>'}).join('')+'</div><p class="lead">いくつ ほしい？</p><div class="grid"><button class="choice" data-action="minus">−</button><span class="counter" style="align-self:center">'+shopCount+' こ</span><button class="choice" data-action="plus">＋</button></div><div class="grid big">'+[['🍎','🍌','🍊'][selected]].map(function(a){return a.repeat(shopCount)}).join(' ')+'</div><div class="actions"><button class="primary" data-action="buy">これを ください！</button></div><div class="hint">'+feedback+'</div></div><p class="sub">ぼうけんのあとも、すきな かずで あそべるよ</p></div>');return}
+if(screen==='family'){shell(header()+'<div class="center"><h1 class="title">🏡 かぞくのにわ</h1><div class="bubble">おうちでも いっしょに あそぼう！</div><div class="home-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="tile" data-action="guide"><span class="pic">📖</span>あそびかたガイド</button><button class="tile" data-action="worksheet"><span class="pic">🖍️</span>プリントあそび</button></div></div>');return}
+if(screen==='guide'){shell(header('family')+'<div class="center"><h1 class="title">📖 おうちで あそぼう</h1><div class="card"><div class="bunny">🐰</div><p class="lead">りんごを 3こ かぞえてみよう！</p><p class="sub">おやつを3個お皿に並べたり、家族に「3個ください」とお願いしてみよう。<br>実物の硬貨を使う遊びは、もう少し大きくなってからでも大丈夫。</p><div class="actions"><button class="primary" data-action="worksheet">プリントでも あそぶ</button></div></div></div>');return}
+if(screen==='worksheet'){shell(header('family')+'<div class="center"><h1 class="title">🖍️ プリントあそび</h1><div class="card"><div class="scene">🐰 ✏️ 🍎</div><p class="lead">りんごの おてがみ</p><p class="sub">「り」を書いて、りんごを3個数えるA4プリントだよ。<br>印刷はおうちの人と一緒にね。</p><div class="actions"><button class="primary" data-action="print">A4で いんさつ</button></div></div></div>');return}
+}
+function initCanvas(){var c=document.getElementById('trace'),ctx=c.getContext('2d');ctx.fillStyle='#d6dcc9';ctx.font='bold 170px sans-serif';ctx.textAlign='center';ctx.fillText('り',280,155);ctx.strokeStyle='#669d73';ctx.lineWidth=13;ctx.lineCap='round';ctx.lineJoin='round';var drawing=false;function pos(e){var r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}}c.addEventListener('pointerdown',function(e){drawing=true;c.setPointerCapture(e.pointerId);var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});c.addEventListener('pointermove',function(e){if(!drawing)return;var p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()});c.addEventListener('pointerup',function(){drawing=false});c.addEventListener('pointercancel',function(){drawing=false})}
+function act(a,v){
+if(a==='home')return navhome();
+if(a==='voice'){speak('きょうは なにして あそぼうか？');return}
+if(a==='start')return start();
+if(a==='free'||a==='family'||a==='shop'||a==='guide'||a==='worksheet'){screen=a;feedback='';render();return}
+if(a==='soon'){speak('この あそびは じゅんびちゅうだよ');return}
+if(a==='letter'){if(v==='り')return go(1);feedback='もういちど さがしてみよう';render();return}
+if(a==='apple'){if(Number(v)!==apples+1){feedback='ひとつずつ あつめよう';render();return}apples++;if(apples===3)return go(2);render();speak(apples+'こ');return}
+if(a==='maze'){var path=[0,4,8,9,10,14];if(Number(v)!==path[maze])return;maze++;if(maze===path.length)return go(3);render();return}
+if(a==='deliver'){if(Number(v)===3)return go(4);feedback='りんごを もういちど かぞえてみよう';render();return}
+if(a==='clear'){render();return}
+if(a==='finish'){completed=true;try{localStorage.setItem('manabi-first-adventure','yes')}catch(e){}return go(5)}
+if(a==='select'){selected=Number(v);feedback='';render();return}
+if(a==='minus'){shopCount=Math.max(1,shopCount-1);render();return}
+if(a==='plus'){shopCount=Math.min(10,shopCount+1);render();return}
+if(a==='buy'){feedback='ありがとう！ '+shopCount+'こ どうぞ！';render();speak(feedback);return}
+if(a==='print'){window.print();return}
+}
+render();
+})();
+</script>
+</body>
+</html>
