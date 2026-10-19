@@ -143,6 +143,56 @@
 @media (orientation:landscape) and (max-height:520px){
  .free-garden-stage .free-choices{top:69%;height:22%}
 }
+
+/* Ver.0.5 interactive illustrated fruit shop (iPad landscape, 3:2 art) */
+.stage.market-stage{width:min(calc(100vw - 20px),calc((100dvh - 20px)*1.5));max-width:none;min-height:0;height:auto;aspect-ratio:3/2;padding:0;border:clamp(3px,.55vw,8px) solid #fff6df;border-radius:clamp(10px,2vw,28px);background:url("./assets/market-v05.png") center/100% 100% no-repeat,#f4e5c2}
+#app:has(.market-stage){padding:10px;overflow:hidden}
+.market-stage:before{display:none}
+.market{position:absolute;inset:0;z-index:2}
+.market button{position:absolute;border:0;background:transparent;color:transparent;border-radius:12px;touch-action:manipulation}
+.market button:focus-visible{outline:4px solid #ffad40;outline-offset:-3px}
+.market button:active{background:#ffed9d80}
+.market .market-back{left:83%;top:2%;width:16%;height:11%}
+.market .market-fruit{top:48%;height:19%;width:13%}
+.market .market-fruit[data-value="0"]{left:10%}
+.market .market-fruit[data-value="1"]{left:23%}
+.market .market-fruit[data-value="2"]{left:36%}
+.market .market-fruit[data-value="3"]{left:48%}
+.market .market-fruit[data-value="4"]{left:60%}
+.market .market-fruit.is-selected{outline:clamp(3px,.5vw,7px) dashed #fff5a8;outline-offset:-3px;background:#fff7ad35}
+.market .market-number{top:56.5%;height:9%;width:4.8%;border-radius:9px}
+.market .market-number[data-value="1"]{left:67.6%}
+.market .market-number[data-value="2"]{left:72.8%}
+.market .market-number[data-value="3"]{left:78.0%}
+.market .market-number[data-value="4"]{left:83.2%}
+.market .market-number[data-value="5"]{left:88.4%}
+.market .market-number.is-selected{outline:3px solid #8a6b31;outline-offset:-2px;background:#fff3b366}
+.market .market-add{left:82%;top:86%;width:16%;height:12%;border-radius:18px}
+.market .market-basket{position:absolute;left:67%;top:75%;width:29%;height:11%;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;pointer-events:none}
+.market .market-basket .fruit-token{font-size:clamp(15px,2.7vw,34px);filter:drop-shadow(0 2px 2px #513d2677)}
+.market .market-message{position:absolute;left:65%;top:39%;width:31%;min-height:10%;display:flex;align-items:center;justify-content:center;padding:4px 8px;text-align:center;font-size:clamp(11px,1.5vw,22px);font-weight:900;color:#65482c;text-shadow:0 1px #fff}
+.market .market-receipt{position:absolute;left:66%;top:66%;width:33%;height:7%;display:flex;align-items:center;justify-content:center;gap:8px;color:#634a29;font-weight:900;font-size:clamp(11px,1.5vw,20px);text-shadow:0 1px #fff8e9}
+.market .market-receipt button{position:static;position:relative;color:#5c4a32;background:#fff9dfd9;border:2px solid #b7955d;padding:2px 8px;font-size:clamp(10px,1.2vw,17px)}
+.market .market-fallback{display:none}
+.market-stage:not(.art-ready) .market{background:linear-gradient(#eff9dfd9,#e9dbb4ed)}
+.market-stage:not(.art-ready) .market-fallback{display:block;position:absolute;top:12%;left:5%;font-size:clamp(22px,4vw,48px);font-weight:900;color:#6c633c}
+.market-stage:not(.art-ready) .market-back{background:#fff8e5;color:#60452c;border:2px solid #b99763}
+.market-stage:not(.art-ready) .market-fruit{top:37%;height:22%;background:#fff9e5;border:3px solid #d4b487;color:#614a33;font-weight:900;font-size:clamp(11px,1.7vw,23px)}
+.market-stage:not(.art-ready) .market-fruit[data-value="0"]{left:3%}
+.market-stage:not(.art-ready) .market-fruit[data-value="1"]{left:18%}
+.market-stage:not(.art-ready) .market-fruit[data-value="2"]{left:33%}
+.market-stage:not(.art-ready) .market-fruit[data-value="3"]{left:48%}
+.market-stage:not(.art-ready) .market-fruit[data-value="4"]{left:63%}
+.market-stage:not(.art-ready) .market-number{top:65%;width:7%;height:10%;background:#fff9e5;border:2px solid #d4b487;color:#60452c;font-weight:900}
+.market-stage:not(.art-ready) .market-number[data-value="1"]{left:12%}
+.market-stage:not(.art-ready) .market-number[data-value="2"]{left:21%}
+.market-stage:not(.art-ready) .market-number[data-value="3"]{left:30%}
+.market-stage:not(.art-ready) .market-number[data-value="4"]{left:39%}
+.market-stage:not(.art-ready) .market-number[data-value="5"]{left:48%}
+.market-stage:not(.art-ready) .market-add{background:#86a56d;color:#fff;border:3px solid #fff3d4}
+.market-stage:not(.art-ready) .market-message{top:20%;left:5%;width:72%;font-size:clamp(16px,2.2vw,28px)}
+.market-stage:not(.art-ready) .market-basket{top:79%;left:5%;width:64%;background:#fff9e8;border-radius:12px}
+.market-stage:not(.art-ready) .market-receipt{top:64%;left:58%;width:38%}
 </style>
 </head>
 <body>
@@ -163,7 +213,7 @@
 (function(){
 'use strict';
 var app=document.getElementById('app');
-var screen='home',step=0,apples=0,maze=0,selected=0,shopCount=1,feedback='',completed=false;
+var screen='home',step=0,apples=0,maze=0,selected=0,shopCount=1,feedback='',completed=false,marketBasket=[],marketDone=false;
 try{completed=localStorage.getItem('manabi-first-adventure')==='yes'}catch(e){}
 var sceneNames=['orchard','basket','forest','village','writing','celebrate'];
 var guideLines=['いっしょに「り」を さがそう！','かごに りんごを 3こ あつめよう！','ぼくと いっしょに すすもう！','おみせに ついたよ！','ゆっくり なぞってみよう！','やったね！ ありがとう！'];
@@ -171,7 +221,7 @@ var prompts=['「り」を みつけよう','りんごを 3こ あつめよう',
 function el(s){return s}
 function speak(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
 function header(back){return '<header class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="'+(back||'home')+'">⌂ もどる</button></header>'}
-function shell(content){var bg=screen==='adventure'?' adventure-stage':screen==='free'?' free-garden-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})});if(screen==='free'){var img=new Image();img.onload=function(){var stage=app.querySelector('.free-garden-stage');if(stage)stage.classList.add('art-ready')};img.src='./assets/free-garden-v04.jpg'}}
+function shell(content){var bg=screen==='adventure'?' adventure-stage':screen==='free'?' free-garden-stage':screen==='shop'?' market-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})});if(screen==='free'){var img=new Image();img.onload=function(){var stage=app.querySelector('.free-garden-stage');if(stage)stage.classList.add('art-ready')};img.src='./assets/free-garden-v04.jpg'}if(screen==='shop'){var shopImage=new Image();shopImage.onload=function(){var stage=app.querySelector('.market-stage');if(stage)stage.classList.add('art-ready')};shopImage.src='./assets/market-v05.png'}}
 function navhome(){screen='home';feedback='';render()}
 function start(){screen='adventure';step=0;apples=0;maze=0;feedback='';render();speak('うさぎさんと りんごを とどけよう')}
 function go(n){step=n;feedback='';render();speak(prompts[n])}
@@ -187,7 +237,7 @@ if(step===5)body='<div class="scene">🎉 🍎 🌷</div>'+ '<p class="lead">り
 shell(header('home')+'<div class="center"><h1 class="title">🍎 はじめての ぼうけん</h1>'+bar+'<div class="adventure-hero"><img class="guide-rabbit" src="./assets/rabbit-'+sceneNames[step]+'.svg" alt="いっしょに ぼうけんする うさぎ"><div class="guide-message">'+guideLines[step]+'</div></div><div class="card"><div class="scene-label">'+(step+1)+' / 6</div><div class="lead">'+prompts[step]+'</div>'+body+'<div class="hint" role="status">'+feedback+'</div></div></div>');
 if(step===4)initCanvas();return}
 if(screen==='free'){shell('<div class="free-garden"><div class="free-fallback">🌷 じゆうあそびのにわ</div><button class="free-back" data-action="home" aria-label="もどる">もどる</button><div class="free-choices"><button class="free-choice" data-action="shop" aria-label="おみせやさん"><span class="free-choice-label">おみせやさん</span></button><button class="free-choice" data-action="coming-craft" aria-label="つくってあそぼう"><span class="free-choice-label">つくってあそぼう</span></button><button class="free-choice" data-action="coming-games" aria-label="ミニゲーム"><span class="free-choice-label">ミニゲーム</span></button></div>'+(feedback?'<div class="free-pending" role="status">'+feedback+'</div>':'')+'</div>');return}
-if(screen==='shop'){shell(header('free')+'<div class="center"><h1 class="title">🏪 おみせやさん</h1><img class="story-art" src="./assets/shop.svg" alt="くだものやさん"><div class="bubble">🐿️ いらっしゃいませ！ なにに する？</div><div class="card"><div class="shop-items">'+[['🍎','りんご'],['🍌','ばなな'],['🍊','みかん']].map(function(a,i){return '<button class="shop-item '+(selected===i?'selected':'')+'" data-action="select" data-value="'+i+'"><span class="pic">'+a[0]+'</span>'+a[1]+'</button>'}).join('')+'</div><p class="lead">いくつ ほしい？</p><div class="grid"><button class="choice" data-action="minus">−</button><span class="counter" style="align-self:center">'+shopCount+' こ</span><button class="choice" data-action="plus">＋</button></div><div class="grid big">'+[['🍎','🍌','🍊'][selected]].map(function(a){return a.repeat(shopCount)}).join(' ')+'</div><div class="actions"><button class="primary" data-action="buy">これを ください！</button></div><div class="hint">'+feedback+'</div></div><p class="sub">ぼうけんのあとも、すきな かずで あそべるよ</p></div>');return}
+if(screen==='shop'){var fruits=[['🍎','りんご'],['🍌','バナナ'],['🍇','ぶどう'],['🍓','いちご'],['🍊','みかん']];var total=marketBasket.reduce(function(n,item){return n+item.count},0);var basket=marketBasket.map(function(item){return '<span class="fruit-token" aria-label="'+fruits[item.id][1]+' '+item.count+'こ">'+fruits[item.id][0]+'×'+item.count+'</span>'}).join('');var message=marketDone?'おかいもの できたね！ 🎉':total?'かごに '+total+'こ！ おかいけい しよう':'どの くだものに する？';shell('<div class="market"><div class="market-fallback">🍎 おみせやさん</div><button class="market-back" data-action="free" aria-label="じゆうあそびにもどる">⌂ もどる</button>'+fruits.map(function(f,i){return '<button class="market-fruit '+(selected===i?'is-selected':'')+'" data-action="select" data-value="'+i+'" aria-label="'+f[1]+'をえらぶ">'+f[0]+' '+f[1]+'</button>'}).join('')+[1,2,3,4,5].map(function(n){return '<button class="market-number '+(shopCount===n?'is-selected':'')+'" data-action="market-quantity" data-value="'+n+'" aria-label="'+n+'こ">'+n+'</button>'}).join('')+'<div class="market-message" role="status">'+message+'</div><div class="market-basket" aria-label="かいものかご">'+(basket||'<span class="fruit-token">🧺</span>')+'</div><div class="market-receipt"><span>'+(marketDone?'ありがとう！':total+'こ')+'</span>'+(total&&!marketDone?'<button data-action="market-clear">やりなおす</button>':'')+'</div><button class="market-add" data-action="'+(marketDone?'market-restart':total?'market-checkout':'market-add')+'" aria-label="'+(marketDone?'もういちど あそぶ':total?'おかいけいする':'かごにいれる')+'">'+(marketDone?'もういちど':total?'おかいけい':'かごにいれる')+'</button></div>');return}
 if(screen==='family'){shell(header()+'<div class="center"><h1 class="title">🏡 かぞくのにわ</h1><div class="bubble">おうちでも いっしょに あそぼう！</div><div class="home-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="tile" data-action="guide"><span class="pic">📖</span>あそびかたガイド</button><button class="tile" data-action="worksheet"><span class="pic">🖍️</span>プリントあそび</button></div></div>');return}
 if(screen==='guide'){shell(header('family')+'<div class="center"><h1 class="title">📖 おうちで あそぼう</h1><div class="card"><img class="bunny-art" src="./assets/rabbit.svg" alt="みどりのスカーフをまいた うさぎ"><p class="lead">りんごを 3こ かぞえてみよう！</p><p class="sub">おやつを3個お皿に並べたり、家族に「3個ください」とお願いしてみよう。<br>実物の硬貨を使う遊びは、もう少し大きくなってからでも大丈夫。</p><div class="actions"><button class="primary" data-action="worksheet">プリントでも あそぶ</button></div></div></div>');return}
 if(screen==='worksheet'){shell(header('family')+'<div class="center"><h1 class="title">🖍️ プリントあそび</h1><div class="card"><img class="story-art" src="./assets/rabbit.svg" alt="うさぎさん"><p class="lead">りんごの おてがみ</p><p class="sub">「り」を書いて、りんごを3個数えるA4プリントだよ。<br>印刷はおうちの人と一緒にね。</p><div class="actions"><button class="primary" data-action="print">A4で いんさつ</button></div></div></div>');return}
@@ -197,7 +247,7 @@ function act(a,v){
 if(a==='home')return navhome();
 if(a==='voice'){speak('きょうは なにして あそぼうか？');return}
 if(a==='start')return start();
-if(a==='free'||a==='family'||a==='shop'||a==='guide'||a==='worksheet'){screen=a;feedback='';render();return}
+if(a==='free'||a==='family'||a==='shop'||a==='guide'||a==='worksheet'){screen=a;feedback='';if(a==='shop'){marketBasket=[];marketDone=false;selected=0;shopCount=1}render();return}
 if(a==='soon'||a==='coming-craft'||a==='coming-games'){feedback='この あそびは じゅんびちゅうだよ 🌷';render();speak('この あそびは じゅんびちゅうだよ');return}
 if(a==='letter'){if(v==='り')return go(1);feedback='もういちど さがしてみよう';render();return}
 if(a==='apple'){if(Number(v)!==apples+1){feedback='ひとつずつ あつめよう';render();return}apples++;if(apples===3)return go(2);render();speak(apples+'こ');return}
@@ -205,7 +255,12 @@ if(a==='maze'){var path=[0,4,8,9,10,14];if(Number(v)!==path[maze])return;maze++;
 if(a==='deliver'){if(Number(v)===3)return go(4);feedback='りんごを もういちど かぞえてみよう';render();return}
 if(a==='clear'){render();return}
 if(a==='finish'){completed=true;try{localStorage.setItem('manabi-first-adventure','yes')}catch(e){}return go(5)}
-if(a==='select'){selected=Number(v);feedback='';render();return}
+if(a==='select'){selected=Number(v);marketDone=false;render();speak(['りんご','バナナ','ぶどう','いちご','みかん'][selected]);return}
+if(a==='market-quantity'){shopCount=Number(v);render();speak(shopCount+'こ');return}
+if(a==='market-add'){marketBasket.push({id:selected,count:shopCount});shopCount=1;render();speak('かごに いれたよ');return}
+if(a==='market-clear'){marketBasket=[];marketDone=false;shopCount=1;render();return}
+if(a==='market-checkout'){marketDone=true;render();speak('おかいもの できたね！ ありがとう');return}
+if(a==='market-restart'){marketBasket=[];marketDone=false;selected=0;shopCount=1;render();return}
 if(a==='minus'){shopCount=Math.max(1,shopCount-1);render();return}
 if(a==='plus'){shopCount=Math.min(10,shopCount+1);render();return}
 if(a==='buy'){feedback='ありがとう！ '+shopCount+'こ どうぞ！';render();speak(feedback);return}
