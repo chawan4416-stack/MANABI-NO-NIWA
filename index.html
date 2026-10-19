@@ -84,6 +84,23 @@
 .progress .dot.on{background:#86a66d}
 @media(max-width:690px){.home-grid{gap:9px}.tile .pic img{width:72px;height:75px}.story-art{height:145px}}
 
+
+/* Ver.0.3 six-scene illustrated adventure */
+.stage.adventure-stage{background:linear-gradient(180deg,#fffaf0b8,#fffdf044 48%,#fffdf077),var(--adventure-bg) center center/cover no-repeat}
+.adventure-stage .card{background:#fffdf5ed;max-width:820px;padding:14px 20px;margin:10px auto}
+.adventure-stage .title{margin:7px 0 4px}
+.adventure-stage .progress{margin:5px auto}
+.adventure-stage .adventure-hero{display:flex;align-items:center;justify-content:center;gap:12px;min-height:110px;margin:4px auto}
+.adventure-stage .guide-rabbit{height:clamp(100px,17vh,155px);width:clamp(90px,16vw,150px);object-fit:contain;filter:drop-shadow(0 7px 5px #666b5040)}
+.adventure-stage .guide-message{max-width:380px;text-align:left;background:#fff9eaf2;border:3px solid #e9d6af;border-radius:24px;padding:10px 18px;font-size:clamp(16px,2vw,23px);font-weight:800;color:#65744c}
+.adventure-stage .scene-label{font-size:clamp(13px,1.6vw,18px);font-weight:800;color:#8a7552}
+.adventure-stage .story-art{height:clamp(80px,14vh,130px);margin:0 auto}
+.adventure-stage .scene{margin:2px auto;font-size:clamp(44px,7vw,75px)}
+.adventure-stage .grid{margin:8px auto}
+.adventure-stage .choice{min-height:55px}
+.adventure-stage .maze{margin:7px auto}
+.adventure-stage .cell{height:clamp(50px,7vw,72px)}
+@media(max-height:720px){.adventure-stage .guide-rabbit{height:90px}.adventure-stage .adventure-hero{min-height:90px}.adventure-stage .card{padding:10px 14px}.adventure-stage .story-art{height:78px}}
 </style>
 </head>
 <body>
@@ -106,11 +123,13 @@
 var app=document.getElementById('app');
 var screen='home',step=0,apples=0,maze=0,selected=0,shopCount=1,feedback='',completed=false;
 try{completed=localStorage.getItem('manabi-first-adventure')==='yes'}catch(e){}
+var sceneNames=['orchard','basket','forest','village','writing','celebrate'];
+var guideLines=['いっしょに「り」を さがそう！','かごに りんごを 3こ あつめよう！','ぼくと いっしょに すすもう！','おみせに ついたよ！','ゆっくり なぞってみよう！','やったね！ ありがとう！'];
 var prompts=['「り」を みつけよう','りんごを 3こ あつめよう','うさぎさんと みちを すすもう','おみせに りんごを とどけよう','「り」を なぞって みよう','やったね！'];
 function el(s){return s}
 function speak(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
 function header(back){return '<header class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="'+(back||'home')+'">⌂ もどる</button></header>'}
-function shell(content){app.innerHTML='<section class="stage">'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})})}
+function shell(content){var bg=screen==='adventure'?' adventure-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})})}
 function navhome(){screen='home';feedback='';render()}
 function start(){screen='adventure';step=0;apples=0;maze=0;feedback='';render();speak('うさぎさんと りんごを とどけよう')}
 function go(n){step=n;feedback='';render();speak(prompts[n])}
@@ -122,8 +141,8 @@ if(step===1)body='<img class="story-art" src="./assets/apple-tree.svg" alt="り�
 if(step===2){var cells=['🐰','🌼','🌳','🌳','➡️','🌳','🌳','🌳','➡️','➡️','➡️','🌳','🌳','🌳','🏪','🌳'];var path=[0,4,8,9,10,14];body='<p class="sub">ひかる みちを じゅんばんに タッチしよう</p><div class="maze">'+cells.map(function(c,i){var p=path.indexOf(i),allowed=p>=0&&p<=maze;return '<button class="cell '+(p>=0?'path':'')+'" data-action="maze" data-value="'+i+'" '+(allowed?'':'disabled')+'>'+(p>=0&&p<maze?'👣':c)+'</button>'}).join('')+'</div>'}
 if(step===3)body='<img class="story-art" src="./assets/shop.svg" alt="りんごを とどける おみせ">'+ '<p class="sub">りんごを なんこ とどけたかな？</p><div class="grid">'+[1,2,3,4,5].map(function(n){return '<button class="choice" data-action="deliver" data-value="'+n+'">'+n+'</button>'}).join('')+'</div>';
 if(step===4)body='<img class="story-art" src="./assets/rabbit.svg" alt="うさぎさん">'+ '<p class="sub">ゆびで「り」を なぞってみよう</p><canvas id="trace" width="560" height="190" style="width:min(100%,560px);height:190px;border:3px dashed #b5c8a3;border-radius:20px;background:#fffef5;touch-action:none" aria-label="り の なぞりがき"></canvas><div class="actions"><button class="secondary" data-action="clear">もういちど</button><button class="primary" data-action="finish">かけたよ！</button></div>';
-if(step===5)body='<div class="scene">🎉 <img class="bunny-art" src="./assets/rabbit.svg" alt="よろこぶ うさぎ" style="vertical-align:middle"> 🍎</div>'+ '<p class="lead">りんごを とどけられたね！</p><p class="sub">おみせやさんでも りんごを かぞえてみよう</p><div class="actions"><button class="primary" data-action="free">おみせやさんへ</button><button class="secondary" data-action="home">おうちへ</button></div>';
-shell(header('home')+'<div class="center"><h1 class="title">🍎 はじめての ぼうけん</h1>'+bar+'<div class="card"><div class="lead">'+prompts[step]+'</div>'+body+'<div class="hint" role="status">'+feedback+'</div></div></div>');
+if(step===5)body='<div class="scene">🎉 🍎 🌷</div>'+ '<p class="lead">りんごを とどけられたね！</p><p class="sub">おみせやさんでも りんごを かぞえてみよう</p><div class="actions"><button class="primary" data-action="free">おみせやさんへ</button><button class="secondary" data-action="home">おうちへ</button></div>';
+shell(header('home')+'<div class="center"><h1 class="title">🍎 はじめての ぼうけん</h1>'+bar+'<div class="adventure-hero"><img class="guide-rabbit" src="./assets/rabbit-'+sceneNames[step]+'.svg" alt="いっしょに ぼうけんする うさぎ"><div class="guide-message">'+guideLines[step]+'</div></div><div class="card"><div class="scene-label">'+(step+1)+' / 6</div><div class="lead">'+prompts[step]+'</div>'+body+'<div class="hint" role="status">'+feedback+'</div></div></div>');
 if(step===4)initCanvas();return}
 if(screen==='free'){shell(header()+'<div class="center"><h1 class="title">🌷 じゆうあそびのにわ</h1><div class="bubble">すきな あそびを えらんでね！</div><div class="home-grid"><button class="tile" data-action="shop"><span class="pic">🍎</span>おみせやさん</button><button class="tile" data-action="soon"><span class="pic">✉️</span>おてがみ</button><button class="tile" data-action="soon"><span class="pic">🧩</span>めいろ</button></div><p class="sub">おみせやさんは さいしょから あそべるよ</p></div>');return}
 if(screen==='shop'){shell(header('free')+'<div class="center"><h1 class="title">🏪 おみせやさん</h1><img class="story-art" src="./assets/shop.svg" alt="くだものやさん"><div class="bubble">🐿️ いらっしゃいませ！ なにに する？</div><div class="card"><div class="shop-items">'+[['🍎','りんご'],['🍌','ばなな'],['🍊','みかん']].map(function(a,i){return '<button class="shop-item '+(selected===i?'selected':'')+'" data-action="select" data-value="'+i+'"><span class="pic">'+a[0]+'</span>'+a[1]+'</button>'}).join('')+'</div><p class="lead">いくつ ほしい？</p><div class="grid"><button class="choice" data-action="minus">−</button><span class="counter" style="align-self:center">'+shopCount+' こ</span><button class="choice" data-action="plus">＋</button></div><div class="grid big">'+[['🍎','🍌','🍊'][selected]].map(function(a){return a.repeat(shopCount)}).join(' ')+'</div><div class="actions"><button class="primary" data-action="buy">これを ください！</button></div><div class="hint">'+feedback+'</div></div><p class="sub">ぼうけんのあとも、すきな かずで あそべるよ</p></div>');return}
