@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eaf2dc">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>まなびのにわ 横画面確認 Ver.0.4.1</title>
+<style>
+:root{font-family:"Hiragino Maru Gothic ProN","Yu Gothic",system-ui,sans-serif;color:#42513a;background:#e9efdc;--green:#6d966d;--cream:#fffaf0;--wood:#b47a4c}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh}button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:4px solid #f4a54d;outline-offset:3px}
+#app{min-height:100dvh;padding:16px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 18% 15%,#fff7d8 0,transparent 34%),linear-gradient(#dcebdc 0%,#f5efd6 70%,#d5e4c5 100%)}
+.stage{position:relative;width:min(100%,1100px);min-height:min(710px,calc(100dvh - 32px));padding:20px 24px 26px;border:8px solid #fff9e8;border-radius:35px;overflow:hidden;box-shadow:0 16px 45px #5a765244;background:linear-gradient(#cde9ed 0%,#e6f3e8 47%,#d6e7b4 48%,#bcd69b 100%)}
+.stage:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.38;background:radial-gradient(circle at 15% 77%,#f6dca5 0 10%,transparent 11%),radial-gradient(circle at 87% 76%,#e2c5a4 0 10%,transparent 11%),radial-gradient(circle at 55% 85%,#f3e6c4 0 18%,transparent 19%)}
+.stage>*{position:relative;z-index:1}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:clamp(20px,3vw,31px);font-weight:900;letter-spacing:.08em;color:#3e6948;text-shadow:0 2px #fff}.mini{border:2px solid #f4e6c6;background:#fffcf2;border-radius:99px;padding:9px 16px;color:#527456;font-weight:800}.center{text-align:center}.lead{font-size:clamp(17px,2.5vw,26px);font-weight:800}.sub{font-size:clamp(13px,1.7vw,18px);line-height:1.7}.title{font-size:clamp(24px,4vw,42px);margin:14px 0 8px;color:#47704d;text-shadow:0 2px #fff}
+.card{background:#fffdf5ed;border:4px solid #fff9ea;border-radius:28px;box-shadow:0 8px 20px #53714a20;padding:20px;max-width:860px;margin:20px auto}
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:28px auto 12px;max-width:930px}
+.tile{min-height:230px;border:5px solid #fdf2d7;border-radius:27px;background:linear-gradient(#fff9ed,#f5e8ce);box-shadow:0 7px #b98b5b,0 13px 15px #5c6d4d25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#5b6044;font-size:clamp(21px,2.8vw,30px);font-weight:900}
+.tile .pic{font-size:clamp(65px,9vw,108px);filter:drop-shadow(0 4px 3px #9875)}.tile small{font-size:14px;font-weight:500}
+.bunny{font-size:76px;line-height:1.1;filter:drop-shadow(0 3px 2px #6e8a7b40)}
+.bubble{display:inline-block;background:#fffef8;border:3px solid #e9e0c5;border-radius:24px;padding:13px 22px;font-weight:800;font-size:clamp(17px,2.4vw,24px);line-height:1.5}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-top:20px}
+.primary,.secondary,.choice{border-radius:20px;border:3px solid #f8edd5;min-height:65px;padding:12px 22px;font-size:clamp(18px,2.5vw,25px);font-weight:900;box-shadow:0 5px #a37b51}
+.primary{background:#80a96c;color:#fff}.secondary{background:#f3d49a;color:#5c573c}.choice{background:#fffaf0;color:#4d684c;min-width:110px}
+.choice[aria-pressed=true]{background:#e4f0c9;border-color:#72a65b;box-shadow:0 3px #72a65b}.choice:disabled{opacity:.55}
+.big{font-size:clamp(38px,7vw,75px)}.grid{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:16px auto}.counter{font-size:24px;font-weight:900;color:#55785b}
+.progress{display:flex;justify-content:center;gap:8px;margin:10px auto}.dot{width:13px;height:13px;border-radius:50%;background:#ffffffb8;border:2px solid #8cac83}.dot.on{background:#6d9a6b}
+.scene{font-size:clamp(65px,12vw,135px);margin:15px auto}.maze{display:grid;grid-template-columns:repeat(4,minmax(55px,95px));gap:5px;justify-content:center;margin:12px auto}.cell{height:clamp(57px,9vw,86px);background:#f4e9cc;border:3px solid #e2cfa9;border-radius:14px;font-size:33px}.cell.path{background:#d2eab5}.cell:disabled{cursor:default}.hint{min-height:35px;color:#a05c3b;font-weight:800;font-size:19px}
+.shop-items{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.shop-item{padding:16px 5px;border-radius:20px;border:3px solid #e8d7b5;background:#fff9e8;font-size:clamp(17px,2.4vw,24px);font-weight:800}.shop-item .pic{display:block;font-size:clamp(50px,7vw,85px)}.shop-item.selected{border-color:#70a765;background:#eaf6df}
+.footer{margin:22px auto 0;text-align:center;font-size:14px;color:#617457}.print-area{display:none}
+@media(max-width:690px){.stage{padding:13px;min-height:calc(100dvh - 20px)}#app{padding:10px}.home-grid{gap:10px}.tile{min-height:170px}.tile .pic{font-size:50px}.tile small{display:none}.card{padding:13px}.shop-items{gap:5px}.shop-item{padding:9px 3px}}
+@media(max-width:480px){.home-grid{grid-template-columns:1fr}.tile{min-height:110px;flex-direction:row}.tile .pic{font-size:55px}}
+@media print{@page{size:A4;margin:14mm}body{background:white;color:#222}#app{display:none!important}.print-area{display:block!important;font-family:"Yu Gothic",sans-serif}.print-area h1{font-size:26pt;text-align:center}.print-area h2{font-size:17pt;margin-top:24px}.print-area .trace{font-size:76pt;color:#bbb;letter-spacing:20px;border-bottom:2px solid #ddd}.print-area .apples{font-size:38pt;letter-spacing:16px}.print-area .writing{height:80px;border-bottom:2px dashed #bbb}.print-area .printfoot{margin-top:55px;font-size:12pt}}
+
+/* Ver.0.2: original illustrated storybook layer; all buttons remain accessible */
+:root{--ink:#644b34;--leaf:#52774d}
+#app{background:radial-gradient(ellipse at 10% 20%,#faf5d8,#dbe8d4 75%)}
+.stage{background:linear-gradient(#fffcf0a8,#fffcf056),url("./assets/garden.svg") center center/cover no-repeat;border:9px solid #fdf5dc;box-shadow:0 15px 50px #6b745b55,inset 0 0 0 3px #e7d6ae}
+.stage:before{background:linear-gradient(180deg,#fffaf0a3 0%,#ffffff20 42%,#f6f0d438 100%);opacity:1}
+.brand{color:#5d7346;text-shadow:0 2px 1px #fff8e8;font-weight:900}
+.title{color:#5b703e;text-shadow:0 2px 2px #fffdf0}
+.bunny-art{width:clamp(90px,14vw,160px);height:clamp(105px,17vw,175px);object-fit:contain;filter:drop-shadow(0 8px 5px #6e765833)}
+.story-art{display:block;object-fit:contain;width:min(100%,360px);height:clamp(125px,23vh,210px);margin:6px auto;filter:drop-shadow(0 6px 3px #6e76582b)}
+.scene-art{display:block;object-fit:contain;width:min(100%,450px);height:clamp(120px,25vh,235px);margin:12px auto}
+.home-grid{margin-top:20px;gap:18px}
+.tile{background:linear-gradient(160deg,#fffdf3f5,#e8d6adf2);border:5px solid #f9efd4;color:#6b5035;box-shadow:0 7px #a37a4e,0 12px 18px #57482b35;transition:transform .12s}
+.tile:active,.choice:active,.primary:active{transform:translateY(3px)}
+.tile .pic{filter:drop-shadow(0 3px 3px #7e654b44)}
+.tile .pic img{width:clamp(75px,10vw,135px);height:clamp(72px,10vw,120px);object-fit:contain}
+.card{background:#fffdf3ed;border:4px solid #f8eed5;box-shadow:0 10px 30px #74684733}
+.bubble{background:#fff9e8ee;border-color:#e6d4a7;color:#705637}
+.mini{background:#fff8e7ed;border-color:#e2c89d;color:#6e593c}
+.primary{background:#7c9f70;box-shadow:0 5px #507b4c}
+.secondary{background:#ebcd98;box-shadow:0 5px #a7855b}
+.choice{background:#fff8e9;border-color:#ead7b6;color:#5c704d}
+.progress .dot{border-color:#78936d}
+.progress .dot.on{background:#86a66d}
+@media(max-width:690px){.home-grid{gap:9px}.tile .pic img{width:72px;height:75px}.story-art{height:145px}}
+
+
+/* Ver.0.2 storybook illustrations */
+#app{background:radial-gradient(ellipse at 10% 20%,#faf5d8,#dbe8d4 75%)}
+.stage{background:linear-gradient(#fffcf0a8,#fffcf056),url("./assets/garden.svg") center center/cover no-repeat;border:9px solid #fdf5dc;box-shadow:0 15px 50px #6b745b55,inset 0 0 0 3px #e7d6ae}
+.stage:before{background:linear-gradient(180deg,#fffaf0a3 0%,#ffffff20 42%,#f6f0d438 100%);opacity:1}
+.brand{color:#5d7346;text-shadow:0 2px 1px #fff8e8}
+.title{color:#5b703e;text-shadow:0 2px 2px #fffdf0}
+.bunny-art{width:clamp(90px,14vw,160px);height:clamp(105px,17vw,175px);object-fit:contain;filter:drop-shadow(0 8px 5px #6e765833)}
+.story-art{display:block;object-fit:contain;width:min(100%,360px);height:clamp(125px,23vh,210px);margin:6px auto;filter:drop-shadow(0 6px 3px #6e76582b)}
+.home-grid{margin-top:20px;gap:18px}
+.tile{background:linear-gradient(160deg,#fffdf3f5,#e8d6adf2);border:5px solid #f9efd4;color:#6b5035;box-shadow:0 7px #a37a4e,0 12px 18px #57482b35;transition:transform .12s}
+.tile:active,.choice:active,.primary:active{transform:translateY(3px)}
+.tile .pic{filter:drop-shadow(0 3px 3px #7e654b44)}
+.tile .pic img{width:clamp(75px,10vw,135px);height:clamp(72px,10vw,120px);object-fit:contain}
+.card{background:#fffdf3ed;border:4px solid #f8eed5;box-shadow:0 10px 30px #74684733}
+.bubble{background:#fff9e8ee;border-color:#e6d4a7;color:#705637}
+.mini{background:#fff8e7ed;border-color:#e2c89d;color:#6e593c}
+.primary{background:#7c9f70;box-shadow:0 5px #507b4c}
+.secondary{background:#ebcd98;box-shadow:0 5px #a7855b}
+.choice{background:#fff8e9;border-color:#ead7b6;color:#5c704d}
+.progress .dot{border-color:#78936d}
+.progress .dot.on{background:#86a66d}
+@media(max-width:690px){.home-grid{gap:9px}.tile .pic img{width:72px;height:75px}.story-art{height:145px}}
+
+
+/* Ver.0.3 six-scene illustrated adventure */
+.stage.adventure-stage{background:linear-gradient(180deg,#fffaf0b8,#fffdf044 48%,#fffdf077),var(--adventure-bg) center center/cover no-repeat}
+.adventure-stage .card{background:#fffdf5ed;max-width:820px;padding:14px 20px;margin:10px auto}
+.adventure-stage .title{margin:7px 0 4px}
+.adventure-stage .progress{margin:5px auto}
+.adventure-stage .adventure-hero{display:flex;align-items:center;justify-content:center;gap:12px;min-height:110px;margin:4px auto}
+.adventure-stage .guide-rabbit{height:clamp(100px,17vh,155px);width:clamp(90px,16vw,150px);object-fit:contain;filter:drop-shadow(0 7px 5px #666b5040)}
+.adventure-stage .guide-message{max-width:380px;text-align:left;background:#fff9eaf2;border:3px solid #e9d6af;border-radius:24px;padding:10px 18px;font-size:clamp(16px,2vw,23px);font-weight:800;color:#65744c}
+.adventure-stage .scene-label{font-size:clamp(13px,1.6vw,18px);font-weight:800;color:#8a7552}
+.adventure-stage .story-art{height:clamp(80px,14vh,130px);margin:0 auto}
+.adventure-stage .scene{margin:2px auto;font-size:clamp(44px,7vw,75px)}
+.adventure-stage .grid{margin:8px auto}
+.adventure-stage .choice{min-height:55px}
+.adventure-stage .maze{margin:7px auto}
+.adventure-stage .cell{height:clamp(50px,7vw,72px)}
+@media(max-height:720px){.adventure-stage .guide-rabbit{height:90px}.adventure-stage .adventure-hero{min-height:90px}.adventure-stage .card{padding:10px 14px}.adventure-stage .story-art{height:78px}}
+
+/* Ver.0.4 approved watercolor free-play scene. The raster illustration is optional until uploaded. */
+.stage.free-garden-stage{background:linear-gradient(180deg,#fff9e91c,#fff9e908),url("./assets/free-garden-v04.jpg") center center/100% 100% no-repeat,url("./assets/garden.svg") center/cover no-repeat;min-height:min(710px,calc(100dvh - 32px))}
+.free-garden-stage:before{display:none}
+.free-garden-stage .free-garden{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3% 3%;z-index:2}
+.free-garden-stage .free-back{position:absolute;left:2.2%;top:3%;width:10%;height:15%;min-width:68px;min-height:64px;border-radius:30px;background:transparent;border:0;color:transparent}
+.free-garden-stage .free-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:2%;height:22%;margin-top:auto}
+.free-garden-stage .free-choice{border:0;background:transparent;border-radius:16px;color:transparent;position:relative;overflow:hidden}
+.free-garden-stage .free-choice:focus-visible,.free-garden-stage .free-back:focus-visible{outline:5px solid #ffba44;outline-offset:-4px}
+.free-garden-stage .free-choice:active{background:#fff7e960}
+.free-garden-stage .free-choice-label{position:absolute;bottom:4px;left:5px;right:5px;color:#654a32;background:#fff9e9ed;border:2px solid #d2b187;border-radius:12px;font-size:clamp(13px,1.6vw,20px);font-weight:900;padding:5px;opacity:0}
+.free-garden-stage .free-pending{position:absolute;left:50%;bottom:25%;transform:translateX(-50%);background:#fff9e9f5;border:3px solid #d9b98b;border-radius:20px;padding:12px 22px;color:#705536;font-weight:900;text-align:center;box-shadow:0 5px 14px #76573455;max-width:90%;font-size:clamp(16px,2vw,23px)}
+.free-garden-stage .free-fallback{display:none}
+@media(max-width:650px){.free-garden-stage .free-choices{height:27%}}
+
+.free-garden-stage:not(.art-ready) .free-garden{background:linear-gradient(#fff8e98c,#fff8e95c)}
+.free-garden-stage:not(.art-ready) .free-back{color:#60482f;background:#fff8e8ed;border:3px solid #bd9669}
+.free-garden-stage:not(.art-ready) .free-choice{background:#fff7e9ee;border:4px solid #d5b17c;box-shadow:0 5px #99734b}
+.free-garden-stage:not(.art-ready) .free-choice-label{opacity:1;bottom:50%;transform:translateY(50%);font-size:clamp(17px,2.2vw,26px)}
+.free-garden-stage:not(.art-ready) .free-fallback{display:block;position:absolute;top:12%;left:50%;transform:translateX(-50%);font-size:clamp(22px,3.5vw,43px);font-weight:900;color:#5d713e;text-shadow:0 2px #fff8ea;background:#fff9e9d9;padding:12px 20px;border-radius:18px;white-space:nowrap}
+
+/* Ver.0.4.1 iPad landscape: keep the approved 3:2 painting undistorted */
+.stage.free-garden-stage{
+ width:min(calc(100vw - 20px),calc((100dvh - 20px)*1.5));
+ max-width:none;
+ min-height:0;
+ height:auto;
+ aspect-ratio:3 / 2;
+ padding:0;
+ border:clamp(3px,.55vw,8px) solid #fff6df;
+ border-radius:clamp(10px,2vw,28px);
+ background: url("./assets/free-garden-v04.jpg") center/100% 100% no-repeat, #e3ebd1;
+}
+#app:has(.free-garden-stage){padding:10px;overflow:hidden}
+.free-garden-stage .free-garden{padding:0;inset:0}
+.free-garden-stage .free-back{left:1%;top:1%;width:9%;height:15%;min-width:0;min-height:0;border-radius:50%}
+.free-garden-stage .free-choices{position:absolute;left:12%;right:3%;top:70%;height:20%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3%;margin:0}
+.free-garden-stage .free-choice{min-width:0;min-height:0;border-radius:12px}
+.free-garden-stage .free-pending{bottom:30%}
+@media (orientation:landscape) and (max-height:520px){
+ .free-garden-stage .free-choices{top:69%;height:22%}
+}
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+<section class="print-area" aria-label="復習プリント">
+<h1>🐰 まなびのにわ　りんごのおてがみ</h1>
+<p>なまえ：＿＿＿＿＿＿＿＿＿＿＿＿　ひづけ：＿＿＿＿＿＿＿＿</p>
+<h2>① 「り」を ゆびで なぞってから、えんぴつで かこう</h2>
+<div class="trace">り　り　り</div><div class="writing"></div><div class="writing"></div>
+<h2>② りんごは なんこ？ かぞえて まるを つけよう</h2>
+<div class="apples">🍎 🍎 🍎</div>
+<p style="font-size:25pt">１　　２　　３　　４　　５</p>
+<h2>③ うさぎさんに りんごを ３こ かいて あげよう</h2>
+<div style="height:150px;border:2px solid #bbb;border-radius:15px"></div>
+<p class="printfoot">できたね！　おうちのひとと りんごを かぞえてみよう。</p>
+</section>
+<script>
+(function(){
+'use strict';
+var app=document.getElementById('app');
+var screen='home',step=0,apples=0,maze=0,selected=0,shopCount=1,feedback='',completed=false;
+try{completed=localStorage.getItem('manabi-first-adventure')==='yes'}catch(e){}
+var sceneNames=['orchard','basket','forest','village','writing','celebrate'];
+var guideLines=['いっしょに「り」を さがそう！','かごに りんごを 3こ あつめよう！','ぼくと いっしょに すすもう！','おみせに ついたよ！','ゆっくり なぞってみよう！','やったね！ ありがとう！'];
+var prompts=['「り」を みつけよう','りんごを 3こ あつめよう','うさぎさんと みちを すすもう','おみせに りんごを とどけよう','「り」を なぞって みよう','やったね！'];
+function el(s){return s}
+function speak(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
+function header(back){return '<header class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="'+(back||'home')+'">⌂ もどる</button></header>'}
+function shell(content){var bg=screen==='adventure'?' adventure-stage':screen==='free'?' free-garden-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})});if(screen==='free'){var img=new Image();img.onload=function(){var stage=app.querySelector('.free-garden-stage');if(stage)stage.classList.add('art-ready')};img.src='./assets/free-garden-v04.jpg'}}
+function navhome(){screen='home';feedback='';render()}
+function start(){screen='adventure';step=0;apples=0;maze=0;feedback='';render();speak('うさぎさんと りんごを とどけよう')}
+function go(n){step=n;feedback='';render();speak(prompts[n])}
+function render(){
+if(screen==='home'){shell('<div class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="voice">🔊 おはなし</button></div><div class="center"><img class="bunny-art" src="./assets/rabbit.svg" alt="みどりのスカーフをまいた うさぎ"><h1 class="title">わかると、あそびが ひろがる。</h1><div class="bubble">きょうは なにして あそぼうか？</div></div><div class="home-grid"><button class="tile" data-action="start"><span class="pic"><img src="./assets/apple-tree.svg" alt=""></span>ぼうけん<small>いっしょに すすもう</small></button><button class="tile" data-action="free"><span class="pic"><img src="./assets/shop.svg" alt=""></span>じゆうあそび<small>すきな あそびを えらぼう</small></button><button class="tile" data-action="family"><span class="pic"><img src="./assets/rabbit.svg" alt=""></span>かぞく<small>おうちでも あそぼう</small></button></div><div class="footer">🐝 🌼 🌷 🌼 🦋</div>');return}
+if(screen==='adventure'){var body='',bar='<div class="progress">'+[0,1,2,3,4,5].map(function(i){return '<span class="dot '+(i<=step?'on':'')+'"></span>'}).join('')+'</div>'; 
+if(step===0)body='<img class="story-art" src="./assets/apple-tree.svg" alt="りんごの木">'+ '<p class="sub">りんごの「り」は どれかな？</p><div class="grid">'+['こ','り','い','に'].map(function(x){return '<button class="choice" data-action="letter" data-value="'+x+'">'+x+'</button>'}).join('')+'</div>';
+if(step===1)body='<img class="story-art" src="./assets/apple-tree.svg" alt="りんごの木">'+ '<p class="sub">りんごを ひとつずつ タッチしてね</p><div class="grid">'+[1,2,3].map(function(i){return '<button class="choice big" data-action="apple" data-value="'+i+'" '+(i<=apples?'disabled':'')+'>'+(i<=apples?'🧺':'🍎')+'</button>'}).join('')+'</div><div class="counter">'+apples+' / 3 こ</div>';
+if(step===2){var cells=['🐰','🌼','🌳','🌳','➡️','🌳','🌳','🌳','➡️','➡️','➡️','🌳','🌳','🌳','🏪','🌳'];var path=[0,4,8,9,10,14];body='<p class="sub">ひかる みちを じゅんばんに タッチしよう</p><div class="maze">'+cells.map(function(c,i){var p=path.indexOf(i),allowed=p>=0&&p<=maze;return '<button class="cell '+(p>=0?'path':'')+'" data-action="maze" data-value="'+i+'" '+(allowed?'':'disabled')+'>'+(p>=0&&p<maze?'👣':c)+'</button>'}).join('')+'</div>'}
+if(step===3)body='<img class="story-art" src="./assets/shop.svg" alt="りんごを とどける おみせ">'+ '<p class="sub">りんごを なんこ とどけたかな？</p><div class="grid">'+[1,2,3,4,5].map(function(n){return '<button class="choice" data-action="deliver" data-value="'+n+'">'+n+'</button>'}).join('')+'</div>';
+if(step===4)body='<img class="story-art" src="./assets/rabbit.svg" alt="うさぎさん">'+ '<p class="sub">ゆびで「り」を なぞってみよう</p><canvas id="trace" width="560" height="190" style="width:min(100%,560px);height:190px;border:3px dashed #b5c8a3;border-radius:20px;background:#fffef5;touch-action:none" aria-label="り の なぞりがき"></canvas><div class="actions"><button class="secondary" data-action="clear">もういちど</button><button class="primary" data-action="finish">かけたよ！</button></div>';
+if(step===5)body='<div class="scene">🎉 🍎 🌷</div>'+ '<p class="lead">りんごを とどけられたね！</p><p class="sub">おみせやさんでも りんごを かぞえてみよう</p><div class="actions"><button class="primary" data-action="free">おみせやさんへ</button><button class="secondary" data-action="home">おうちへ</button></div>';
+shell(header('home')+'<div class="center"><h1 class="title">🍎 はじめての ぼうけん</h1>'+bar+'<div class="adventure-hero"><img class="guide-rabbit" src="./assets/rabbit-'+sceneNames[step]+'.svg" alt="いっしょに ぼうけんする うさぎ"><div class="guide-message">'+guideLines[step]+'</div></div><div class="card"><div class="scene-label">'+(step+1)+' / 6</div><div class="lead">'+prompts[step]+'</div>'+body+'<div class="hint" role="status">'+feedback+'</div></div></div>');
+if(step===4)initCanvas();return}
+if(screen==='free'){shell('<div class="free-garden"><div class="free-fallback">🌷 じゆうあそびのにわ</div><button class="free-back" data-action="home" aria-label="もどる">もどる</button><div class="free-choices"><button class="free-choice" data-action="shop" aria-label="おみせやさん"><span class="free-choice-label">おみせやさん</span></button><button class="free-choice" data-action="coming-craft" aria-label="つくってあそぼう"><span class="free-choice-label">つくってあそぼう</span></button><button class="free-choice" data-action="coming-games" aria-label="ミニゲーム"><span class="free-choice-label">ミニゲーム</span></button></div>'+(feedback?'<div class="free-pending" role="status">'+feedback+'</div>':'')+'</div>');return}
+if(screen==='shop'){shell(header('free')+'<div class="center"><h1 class="title">🏪 おみせやさん</h1><img class="story-art" src="./assets/shop.svg" alt="くだものやさん"><div class="bubble">🐿️ いらっしゃいませ！ なにに する？</div><div class="card"><div class="shop-items">'+[['🍎','りんご'],['🍌','ばなな'],['🍊','みかん']].map(function(a,i){return '<button class="shop-item '+(selected===i?'selected':'')+'" data-action="select" data-value="'+i+'"><span class="pic">'+a[0]+'</span>'+a[1]+'</button>'}).join('')+'</div><p class="lead">いくつ ほしい？</p><div class="grid"><button class="choice" data-action="minus">−</button><span class="counter" style="align-self:center">'+shopCount+' こ</span><button class="choice" data-action="plus">＋</button></div><div class="grid big">'+[['🍎','🍌','🍊'][selected]].map(function(a){return a.repeat(shopCount)}).join(' ')+'</div><div class="actions"><button class="primary" data-action="buy">これを ください！</button></div><div class="hint">'+feedback+'</div></div><p class="sub">ぼうけんのあとも、すきな かずで あそべるよ</p></div>');return}
+if(screen==='family'){shell(header()+'<div class="center"><h1 class="title">🏡 かぞくのにわ</h1><div class="bubble">おうちでも いっしょに あそぼう！</div><div class="home-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="tile" data-action="guide"><span class="pic">📖</span>あそびかたガイド</button><button class="tile" data-action="worksheet"><span class="pic">🖍️</span>プリントあそび</button></div></div>');return}
+if(screen==='guide'){shell(header('family')+'<div class="center"><h1 class="title">📖 おうちで あそぼう</h1><div class="card"><img class="bunny-art" src="./assets/rabbit.svg" alt="みどりのスカーフをまいた うさぎ"><p class="lead">りんごを 3こ かぞえてみよう！</p><p class="sub">おやつを3個お皿に並べたり、家族に「3個ください」とお願いしてみよう。<br>実物の硬貨を使う遊びは、もう少し大きくなってからでも大丈夫。</p><div class="actions"><button class="primary" data-action="worksheet">プリントでも あそぶ</button></div></div></div>');return}
+if(screen==='worksheet'){shell(header('family')+'<div class="center"><h1 class="title">🖍️ プリントあそび</h1><div class="card"><img class="story-art" src="./assets/rabbit.svg" alt="うさぎさん"><p class="lead">りんごの おてがみ</p><p class="sub">「り」を書いて、りんごを3個数えるA4プリントだよ。<br>印刷はおうちの人と一緒にね。</p><div class="actions"><button class="primary" data-action="print">A4で いんさつ</button></div></div></div>');return}
+}
+function initCanvas(){var c=document.getElementById('trace'),ctx=c.getContext('2d');ctx.fillStyle='#d6dcc9';ctx.font='bold 170px sans-serif';ctx.textAlign='center';ctx.fillText('り',280,155);ctx.strokeStyle='#669d73';ctx.lineWidth=13;ctx.lineCap='round';ctx.lineJoin='round';var drawing=false;function pos(e){var r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}}c.addEventListener('pointerdown',function(e){drawing=true;c.setPointerCapture(e.pointerId);var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});c.addEventListener('pointermove',function(e){if(!drawing)return;var p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()});c.addEventListener('pointerup',function(){drawing=false});c.addEventListener('pointercancel',function(){drawing=false})}
+function act(a,v){
+if(a==='home')return navhome();
+if(a==='voice'){speak('きょうは なにして あそぼうか？');return}
+if(a==='start')return start();
+if(a==='free'||a==='family'||a==='shop'||a==='guide'||a==='worksheet'){screen=a;feedback='';render();return}
+if(a==='soon'||a==='coming-craft'||a==='coming-games'){feedback='この あそびは じゅんびちゅうだよ 🌷';render();speak('この あそびは じゅんびちゅうだよ');return}
+if(a==='letter'){if(v==='り')return go(1);feedback='もういちど さがしてみよう';render();return}
+if(a==='apple'){if(Number(v)!==apples+1){feedback='ひとつずつ あつめよう';render();return}apples++;if(apples===3)return go(2);render();speak(apples+'こ');return}
+if(a==='maze'){var path=[0,4,8,9,10,14];if(Number(v)!==path[maze])return;maze++;if(maze===path.length)return go(3);render();return}
+if(a==='deliver'){if(Number(v)===3)return go(4);feedback='りんごを もういちど かぞえてみよう';render();return}
+if(a==='clear'){render();return}
+if(a==='finish'){completed=true;try{localStorage.setItem('manabi-first-adventure','yes')}catch(e){}return go(5)}
+if(a==='select'){selected=Number(v);feedback='';render();return}
+if(a==='minus'){shopCount=Math.max(1,shopCount-1);render();return}
+if(a==='plus'){shopCount=Math.min(10,shopCount+1);render();return}
+if(a==='buy'){feedback='ありがとう！ '+shopCount+'こ どうぞ！';render();speak(feedback);return}
+if(a==='print'){window.print();return}
+}
+render();
+})();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(e){console.warn("offline unavailable",e)})})}</script>
+</body>
+</html>
