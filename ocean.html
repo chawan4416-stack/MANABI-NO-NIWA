@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#76c9dc"><meta name="apple-mobile-web-app-capable" content="yes"><title>まなびのうみ 🐧</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#76c9dc"><link rel="manifest" href="./ocean.webmanifest"><link rel="icon" href="./ocean-icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./assets/ocean-home-v1.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><title>まなびのうみ 🐧</title>
 <style>
 :root{font-family:"Hiragino Maru Gothic ProN","Yu Gothic",system-ui,sans-serif;color:#28516b;background:#b7e9ef}*{box-sizing:border-box}html,body{margin:0;min-height:100%;overscroll-behavior:none}button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:4px solid #f6a43c;outline-offset:2px}#app{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:8px;background:radial-gradient(ellipse at 50% 5%,#fff6cf 0%,#b2eff2 35%,#6dbccf 100%)}
 .stage{position:relative;width:min(calc(100vw - 16px),calc((100dvh - 16px)*1.333333));aspect-ratio:4/3;max-height:calc(100dvh - 16px);overflow:hidden;border:clamp(3px,.55vw,8px) solid #fff7dc;border-radius:clamp(14px,2vw,26px);box-shadow:0 12px 40px #16485c70;background:linear-gradient(165deg,#e8fcff 0%,#7dd4e9 35%,#2687bd 100%)}
@@ -66,5 +66,6 @@ if(a==='checkout'){if(!basket.length){say('かごに いれてね');return}scree
 if(a==='print'){window.print();return}
 }
 render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){})}
 })();
 </script></body></html>
