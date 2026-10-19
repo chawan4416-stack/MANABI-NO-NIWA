@@ -1,0 +1,19 @@
+{
+  "name": "まなびのうみ",
+  "short_name": "まなびのうみ",
+  "description": "ペンギンと海をたんけんする、子どものための絵本あそび",
+  "start_url": "./ocean.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#77cce4",
+  "theme_color": "#77cce4",
+  "icons": [
+    {
+      "src": "./ocean-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
