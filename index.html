@@ -121,6 +121,28 @@
 .free-garden-stage:not(.art-ready) .free-choice{background:#fff7e9ee;border:4px solid #d5b17c;box-shadow:0 5px #99734b}
 .free-garden-stage:not(.art-ready) .free-choice-label{opacity:1;bottom:50%;transform:translateY(50%);font-size:clamp(17px,2.2vw,26px)}
 .free-garden-stage:not(.art-ready) .free-fallback{display:block;position:absolute;top:12%;left:50%;transform:translateX(-50%);font-size:clamp(22px,3.5vw,43px);font-weight:900;color:#5d713e;text-shadow:0 2px #fff8ea;background:#fff9e9d9;padding:12px 20px;border-radius:18px;white-space:nowrap}
+
+/* Ver.0.4.1 iPad landscape: keep the approved 3:2 painting undistorted */
+.stage.free-garden-stage{
+ width:min(calc(100vw - 20px),calc((100dvh - 20px)*1.5));
+ max-width:none;
+ min-height:0;
+ height:auto;
+ aspect-ratio:3 / 2;
+ padding:0;
+ border:clamp(3px,.55vw,8px) solid #fff6df;
+ border-radius:clamp(10px,2vw,28px);
+ background: url("./assets/free-garden-v04.jpg") center/100% 100% no-repeat, #e3ebd1;
+}
+#app:has(.free-garden-stage){padding:10px;overflow:hidden}
+.free-garden-stage .free-garden{padding:0;inset:0}
+.free-garden-stage .free-back{left:1%;top:1%;width:9%;height:15%;min-width:0;min-height:0;border-radius:50%}
+.free-garden-stage .free-choices{position:absolute;left:12%;right:3%;top:70%;height:20%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3%;margin:0}
+.free-garden-stage .free-choice{min-width:0;min-height:0;border-radius:12px}
+.free-garden-stage .free-pending{bottom:30%}
+@media (orientation:landscape) and (max-height:520px){
+ .free-garden-stage .free-choices{top:69%;height:22%}
+}
 </style>
 </head>
 <body>
