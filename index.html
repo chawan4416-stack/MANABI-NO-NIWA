@@ -213,6 +213,23 @@
 .market .market-message{left:67%;top:44%;width:25%;min-height:8%;font-size:clamp(11px,1.4vw,20px)}
 .market-stage:not(.art-ready) .market-add{left:79.1%;top:75.3%;width:15.1%;height:7.1%;font-size:clamp(10px,1.35vw,19px)}
 .market-stage:not(.art-ready) .market-checkout{background:#7da76a;color:#fff}
+
+/* Ver.0.6: finger-drag fruit into a clearly marked basket */
+.market .market-fruit{touch-action:none}
+.market .market-fruit.is-dragging{background:#fff6bd70;outline:4px dashed #ffdb62;outline-offset:-4px}
+.market .market-drop{position:absolute;left:64%;top:70%;width:33%;height:14%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;border:3px dashed #8eac60;background:#fff6d8e9;border-radius:16px;color:#67502c;box-shadow:0 3px 10px #59432b55;pointer-events:none;z-index:4;text-align:center}
+.market .market-drop.is-over{background:#e3f5baf5;border:5px solid #7aa750;transform:scale(1.03)}
+.market .market-drop-title{font-weight:900;font-size:clamp(12px,1.8vw,24px);line-height:1.1}
+.market .market-drop-items{display:flex;gap:3px;flex-wrap:wrap;align-items:center;justify-content:center;font-size:clamp(12px,1.7vw,22px);line-height:1.15}
+.market .market-drag-ghost{position:fixed;left:0;top:0;z-index:999;pointer-events:none;font-size:clamp(48px,7vw,84px);filter:drop-shadow(0 5px 5px #55432977);transform:translate(-50%,-55%);display:none}
+.market .market-add{left:64%;top:85%;width:17%;height:10%;font-size:clamp(11px,1.3vw,18px);z-index:4}
+.market .market-checkout{left:82%;top:85%;width:16%;height:10%;z-index:4}
+.market .market-total{left:73%;top:65%;width:10%;z-index:4}
+.market .market-reset{left:87%;top:65%;z-index:4}
+.market .market-basket{display:none}
+.market .market-message{top:40%;left:66%;width:30%;font-size:clamp(11px,1.45vw,20px)}
+.market-stage:not(.art-ready) .market-add{left:64%;top:85%;width:17%;height:10%}
+.market-stage:not(.art-ready) .market-drop{background:#fff8df}
 </style>
 </head>
 <body>
@@ -233,7 +250,7 @@
 (function(){
 'use strict';
 var app=document.getElementById('app');
-var screen='home',step=0,apples=0,maze=0,selected=0,shopCount=1,feedback='',completed=false,marketBasket=[],marketDone=false;
+var screen='home',step=0,apples=0,maze=0,selected=0,shopCount=1,feedback='',completed=false,marketBasket=[],marketDone=false,marketCarry=0,marketDrag=null,suppressFruitClick=false;
 try{completed=localStorage.getItem('manabi-first-adventure')==='yes'}catch(e){}
 var sceneNames=['orchard','basket','forest','village','writing','celebrate'];
 var guideLines=['いっしょに「り」を さがそう！','かごに りんごを 3こ あつめよう！','ぼくと いっしょに すすもう！','おみせに ついたよ！','ゆっくり なぞってみよう！','やったね！ ありがとう！'];
@@ -241,7 +258,7 @@ var prompts=['「り」を みつけよう','りんごを 3こ あつめよう',
 function el(s){return s}
 function speak(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
 function header(back){return '<header class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="'+(back||'home')+'">⌂ もどる</button></header>'}
-function shell(content){var bg=screen==='adventure'?' adventure-stage':screen==='free'?' free-garden-stage':screen==='shop'?' market-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})});if(screen==='free'){var img=new Image();img.onload=function(){var stage=app.querySelector('.free-garden-stage');if(stage)stage.classList.add('art-ready')};img.src='./assets/free-garden-v04.jpg'}if(screen==='shop'){var shopImage=new Image();shopImage.onload=function(){var stage=app.querySelector('.market-stage');if(stage)stage.classList.add('art-ready')};shopImage.src='./assets/market-v05.png'}}
+function shell(content){var bg=screen==='adventure'?' adventure-stage':screen==='free'?' free-garden-stage':screen==='shop'?' market-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})});if(screen==='free'){var img=new Image();img.onload=function(){var stage=app.querySelector('.free-garden-stage');if(stage)stage.classList.add('art-ready')};img.src='./assets/free-garden-v04.jpg'}if(screen==='shop'){initMarketDrag();var shopImage=new Image();shopImage.onload=function(){var stage=app.querySelector('.market-stage');if(stage)stage.classList.add('art-ready')};shopImage.src='./assets/market-v05.png'}}
 function navhome(){screen='home';feedback='';render()}
 function start(){screen='adventure';step=0;apples=0;maze=0;feedback='';render();speak('うさぎさんと りんごを とどけよう')}
 function go(n){step=n;feedback='';render();speak(prompts[n])}
@@ -257,17 +274,61 @@ if(step===5)body='<div class="scene">🎉 🍎 🌷</div>'+ '<p class="lead">り
 shell(header('home')+'<div class="center"><h1 class="title">🍎 はじめての ぼうけん</h1>'+bar+'<div class="adventure-hero"><img class="guide-rabbit" src="./assets/rabbit-'+sceneNames[step]+'.svg" alt="いっしょに ぼうけんする うさぎ"><div class="guide-message">'+guideLines[step]+'</div></div><div class="card"><div class="scene-label">'+(step+1)+' / 6</div><div class="lead">'+prompts[step]+'</div>'+body+'<div class="hint" role="status">'+feedback+'</div></div></div>');
 if(step===4)initCanvas();return}
 if(screen==='free'){shell('<div class="free-garden"><div class="free-fallback">🌷 じゆうあそびのにわ</div><button class="free-back" data-action="home" aria-label="もどる">もどる</button><div class="free-choices"><button class="free-choice" data-action="shop" aria-label="おみせやさん"><span class="free-choice-label">おみせやさん</span></button><button class="free-choice" data-action="coming-craft" aria-label="つくってあそぼう"><span class="free-choice-label">つくってあそぼう</span></button><button class="free-choice" data-action="coming-games" aria-label="ミニゲーム"><span class="free-choice-label">ミニゲーム</span></button></div>'+(feedback?'<div class="free-pending" role="status">'+feedback+'</div>':'')+'</div>');return}
-if(screen==='shop'){var fruits=[['🍎','りんご'],['🍌','バナナ'],['🍇','ぶどう'],['🍓','いちご'],['🍊','みかん']];var total=marketBasket.reduce(function(n,item){return n+item.count},0);var basket=marketBasket.map(function(item){return '<span class="fruit-token" aria-label="'+fruits[item.id][1]+' '+item.count+'こ">'+fruits[item.id][0]+'×'+item.count+'</span>'}).join('');var message=marketDone?'おかいもの できたね！ 🎉':total?'かごに '+total+'こ はいったよ！':fruits[selected][1]+'を なんこ かう？';shell('<div class="market"><div class="market-fallback">🍎 おみせやさん</div><button class="market-back" data-action="free" aria-label="じゆうあそびにもどる">⌂ もどる</button>'+fruits.map(function(f,i){return '<button class="market-fruit '+(selected===i?'is-selected':'')+'" data-action="select" data-value="'+i+'" aria-label="'+f[1]+'をえらぶ">'+f[0]+' '+f[1]+'</button>'}).join('')+[1,2,3,4,5].map(function(n){return '<button class="market-number '+(shopCount===n?'is-selected':'')+'" data-action="market-quantity" data-value="'+n+'" aria-label="'+n+'こ">'+n+'</button>'}).join('')+'<div class="market-message" role="status">'+message+'</div><div class="market-basket" aria-label="かいものかご">'+(basket||'<span class="fruit-token">🧺</span>')+'</div><button class="market-add" data-action="'+(marketDone?'market-restart':'market-add')+'" aria-label="'+(marketDone?'もういちど あそぶ':fruits[selected][1]+'を '+shopCount+'こ かごにいれる')+'">'+(marketDone?'もういちど':'🧺 かごにいれる')+'</button><div class="market-total">'+total+'こ</div><button class="market-checkout" data-action="market-checkout" '+(!total||marketDone?'disabled':'')+' aria-label="おかいけいする">おかいけいする</button>'+(total&&!marketDone?'<button class="market-reset" data-action="market-clear">やりなおす</button>':'')+'</div>');return}
+if(screen==='shop'){var fruits=[['🍎','りんご'],['🍌','バナナ'],['🍇','ぶどう'],['🍓','いちご'],['🍊','みかん']];var total=marketBasket.reduce(function(n,item){return n+item.count},0);var basket=marketBasket.map(function(item){return '<span aria-label="'+fruits[item.id][1]+' '+item.count+'こ">'+fruits[item.id][0]+'×'+item.count+'</span>'}).join(' ');var message=marketDone?'おかいもの できたね！ 🎉':marketCarry?'あと '+(shopCount-marketCarry)+'こ はこぼう！':'くだものを ゆびで かごへ！';shell('<div class="market"><div class="market-fallback">🍎 おみせやさん</div><button class="market-back" data-action="free" aria-label="じゆうあそびにもどる">⌂ もどる</button>'+fruits.map(function(f,i){return '<button class="market-fruit '+(selected===i?'is-selected':'')+'" data-action="select" data-value="'+i+'" aria-label="'+f[1]+'を かごにドラッグする">'+f[0]+' '+f[1]+'</button>'}).join('')+[1,2,3,4,5].map(function(n){return '<button class="market-number '+(shopCount===n?'is-selected':'')+'" data-action="market-quantity" data-value="'+n+'" aria-label="'+n+'こ">'+n+'</button>'}).join('')+'<div class="market-message" role="status">'+message+'</div><div class="market-drop" aria-label="くだものをここにはこぼう"><span class="market-drop-title">🧺 ここに いれてね！ '+(marketCarry?marketCarry+' / '+shopCount:'')+'</span><span class="market-drop-items">'+(basket||'🍎 → 🧺')+'</span></div><div class="market-drag-ghost" aria-hidden="true"></div><button class="market-add" data-action="'+(marketDone?'market-restart':'market-add')+'" aria-label="'+(marketDone?'もういちど あそぶ':'えらんだ くだものを かごにいれる')+'">'+(marketDone?'もういちど':'タッチで いれる')+'</button><div class="market-total">'+total+'こ</div><button class="market-checkout" data-action="market-checkout" '+(!total||marketDone?'disabled':'')+' aria-label="おかいけいする">おかいけいする</button>'+(total&&!marketDone?'<button class="market-reset" data-action="market-clear">やりなおす</button>':'')+'</div>');return}
 if(screen==='family'){shell(header()+'<div class="center"><h1 class="title">🏡 かぞくのにわ</h1><div class="bubble">おうちでも いっしょに あそぼう！</div><div class="home-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="tile" data-action="guide"><span class="pic">📖</span>あそびかたガイド</button><button class="tile" data-action="worksheet"><span class="pic">🖍️</span>プリントあそび</button></div></div>');return}
 if(screen==='guide'){shell(header('family')+'<div class="center"><h1 class="title">📖 おうちで あそぼう</h1><div class="card"><img class="bunny-art" src="./assets/rabbit.svg" alt="みどりのスカーフをまいた うさぎ"><p class="lead">りんごを 3こ かぞえてみよう！</p><p class="sub">おやつを3個お皿に並べたり、家族に「3個ください」とお願いしてみよう。<br>実物の硬貨を使う遊びは、もう少し大きくなってからでも大丈夫。</p><div class="actions"><button class="primary" data-action="worksheet">プリントでも あそぶ</button></div></div></div>');return}
 if(screen==='worksheet'){shell(header('family')+'<div class="center"><h1 class="title">🖍️ プリントあそび</h1><div class="card"><img class="story-art" src="./assets/rabbit.svg" alt="うさぎさん"><p class="lead">りんごの おてがみ</p><p class="sub">「り」を書いて、りんごを3個数えるA4プリントだよ。<br>印刷はおうちの人と一緒にね。</p><div class="actions"><button class="primary" data-action="print">A4で いんさつ</button></div></div></div>');return}
 }
+
+function putOneFruit(id){
+ if(marketDone)return;
+ if(marketCarry>0&&selected!==id)marketCarry=0;
+ selected=id;marketCarry++;
+ if(marketCarry>=shopCount){marketBasket.push({id:id,count:shopCount});marketCarry=0;speak(shopCount+'こ かごに はいったよ')}
+ else speak(marketCarry+'こ');
+ render();
+}
+function initMarketDrag(){
+ var stage=app.querySelector('.market-stage'),ghost=app.querySelector('.market-drag-ghost'),drop=app.querySelector('.market-drop');
+ if(!stage||!ghost||!drop)return;
+ app.querySelectorAll('.market-fruit').forEach(function(btn){
+  btn.addEventListener('pointerdown',function(e){
+   if(marketDone)return;
+   if(e.pointerType==='mouse'&&e.button!==0)return;
+   var id=Number(btn.dataset.value);
+   marketDrag={id:id,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
+   btn.setPointerCapture(e.pointerId);
+  });
+  btn.addEventListener('pointermove',function(e){
+   var d=marketDrag;if(!d||d.pointerId!==e.pointerId)return;
+   if(Math.hypot(e.clientX-d.startX,e.clientY-d.startY)>9)d.moved=true;
+   if(!d.moved)return;
+   e.preventDefault();
+   btn.classList.add('is-dragging');
+   ghost.style.display='block';
+   ghost.textContent=['🍎','🍌','🍇','🍓','🍊'][d.id];
+   ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';
+   var r=drop.getBoundingClientRect();
+   drop.classList.toggle('is-over',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom);
+  });
+  btn.addEventListener('pointerup',function(e){
+   var d=marketDrag;if(!d||d.pointerId!==e.pointerId)return;
+   marketDrag=null;ghost.style.display='none';drop.classList.remove('is-over');btn.classList.remove('is-dragging');
+   if(!d.moved)return;
+   suppressFruitClick=true;
+   var r=drop.getBoundingClientRect();
+   if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)putOneFruit(d.id);
+  });
+  btn.addEventListener('pointercancel',function(){marketDrag=null;ghost.style.display='none';drop.classList.remove('is-over');btn.classList.remove('is-dragging')});
+ });
+}
+
 function initCanvas(){var c=document.getElementById('trace'),ctx=c.getContext('2d');ctx.fillStyle='#d6dcc9';ctx.font='bold 170px sans-serif';ctx.textAlign='center';ctx.fillText('り',280,155);ctx.strokeStyle='#669d73';ctx.lineWidth=13;ctx.lineCap='round';ctx.lineJoin='round';var drawing=false;function pos(e){var r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}}c.addEventListener('pointerdown',function(e){drawing=true;c.setPointerCapture(e.pointerId);var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});c.addEventListener('pointermove',function(e){if(!drawing)return;var p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()});c.addEventListener('pointerup',function(){drawing=false});c.addEventListener('pointercancel',function(){drawing=false})}
 function act(a,v){
 if(a==='home')return navhome();
 if(a==='voice'){speak('きょうは なにして あそぼうか？');return}
 if(a==='start')return start();
-if(a==='free'||a==='family'||a==='shop'||a==='guide'||a==='worksheet'){screen=a;feedback='';if(a==='shop'){marketBasket=[];marketDone=false;selected=0;shopCount=1}render();return}
+if(a==='free'||a==='family'||a==='shop'||a==='guide'||a==='worksheet'){screen=a;feedback='';if(a==='shop'){marketBasket=[];marketCarry=0;marketDone=false;selected=0;shopCount=1}render();return}
 if(a==='soon'||a==='coming-craft'||a==='coming-games'){feedback='この あそびは じゅんびちゅうだよ 🌷';render();speak('この あそびは じゅんびちゅうだよ');return}
 if(a==='letter'){if(v==='り')return go(1);feedback='もういちど さがしてみよう';render();return}
 if(a==='apple'){if(Number(v)!==apples+1){feedback='ひとつずつ あつめよう';render();return}apples++;if(apples===3)return go(2);render();speak(apples+'こ');return}
@@ -275,12 +336,12 @@ if(a==='maze'){var path=[0,4,8,9,10,14];if(Number(v)!==path[maze])return;maze++;
 if(a==='deliver'){if(Number(v)===3)return go(4);feedback='りんごを もういちど かぞえてみよう';render();return}
 if(a==='clear'){render();return}
 if(a==='finish'){completed=true;try{localStorage.setItem('manabi-first-adventure','yes')}catch(e){}return go(5)}
-if(a==='select'){selected=Number(v);marketDone=false;render();speak(['りんご','バナナ','ぶどう','いちご','みかん'][selected]);return}
-if(a==='market-quantity'){shopCount=Number(v);render();speak(shopCount+'こ');return}
-if(a==='market-add'){marketBasket.push({id:selected,count:shopCount});shopCount=1;render();speak('かごに いれたよ');return}
-if(a==='market-clear'){marketBasket=[];marketDone=false;shopCount=1;render();return}
+if(a==='select'){if(suppressFruitClick){suppressFruitClick=false;return}selected=Number(v);marketCarry=0;marketDone=false;render();speak(['りんご','バナナ','ぶどう','いちご','みかん'][selected]);return}
+if(a==='market-quantity'){shopCount=Number(v);marketCarry=0;render();speak(shopCount+'こ');return}
+if(a==='market-add'){marketBasket.push({id:selected,count:shopCount});marketCarry=0;render();speak(shopCount+'こ かごに いれたよ');return}
+if(a==='market-clear'){marketBasket=[];marketCarry=0;marketDone=false;shopCount=1;render();return}
 if(a==='market-checkout'){marketDone=true;render();speak('おかいもの できたね！ ありがとう');return}
-if(a==='market-restart'){marketBasket=[];marketDone=false;selected=0;shopCount=1;render();return}
+if(a==='market-restart'){marketBasket=[];marketCarry=0;marketDone=false;selected=0;shopCount=1;render();return}
 if(a==='minus'){shopCount=Math.max(1,shopCount-1);render();return}
 if(a==='plus'){shopCount=Math.min(10,shopCount+1);render();return}
 if(a==='buy'){feedback='ありがとう！ '+shopCount+'こ どうぞ！';render();speak(feedback);return}
