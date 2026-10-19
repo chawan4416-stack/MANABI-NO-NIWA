@@ -101,6 +101,20 @@
 .adventure-stage .maze{margin:7px auto}
 .adventure-stage .cell{height:clamp(50px,7vw,72px)}
 @media(max-height:720px){.adventure-stage .guide-rabbit{height:90px}.adventure-stage .adventure-hero{min-height:90px}.adventure-stage .card{padding:10px 14px}.adventure-stage .story-art{height:78px}}
+
+/* Ver.0.4 approved watercolor free-play scene. The raster illustration is optional until uploaded. */
+.stage.free-garden-stage{background:linear-gradient(180deg,#fff9e91c,#fff9e908),url("./assets/free-garden-v04.jpg") center center/100% 100% no-repeat,url("./assets/garden.svg") center/cover no-repeat;min-height:min(710px,calc(100dvh - 32px))}
+.free-garden-stage:before{display:none}
+.free-garden-stage .free-garden{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3% 3%;z-index:2}
+.free-garden-stage .free-back{position:absolute;left:2.2%;top:3%;width:10%;height:15%;min-width:68px;min-height:64px;border-radius:30px;background:transparent;border:0;color:transparent}
+.free-garden-stage .free-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:2%;height:22%;margin-top:auto}
+.free-garden-stage .free-choice{border:0;background:transparent;border-radius:16px;color:transparent;position:relative;overflow:hidden}
+.free-garden-stage .free-choice:focus-visible,.free-garden-stage .free-back:focus-visible{outline:5px solid #ffba44;outline-offset:-4px}
+.free-garden-stage .free-choice:active{background:#fff7e960}
+.free-garden-stage .free-choice-label{position:absolute;bottom:4px;left:5px;right:5px;color:#654a32;background:#fff9e9ed;border:2px solid #d2b187;border-radius:12px;font-size:clamp(13px,1.6vw,20px);font-weight:900;padding:5px;opacity:0}
+.free-garden-stage .free-pending{position:absolute;left:50%;bottom:25%;transform:translateX(-50%);background:#fff9e9f5;border:3px solid #d9b98b;border-radius:20px;padding:12px 22px;color:#705536;font-weight:900;text-align:center;box-shadow:0 5px 14px #76573455;max-width:90%;font-size:clamp(16px,2vw,23px)}
+.free-garden-stage .free-fallback{display:none}
+@media(max-width:650px){.free-garden-stage .free-choices{height:27%}}
 </style>
 </head>
 <body>
@@ -129,7 +143,7 @@ var prompts=['「り」を みつけよう','りんごを 3こ あつめよう',
 function el(s){return s}
 function speak(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
 function header(back){return '<header class="top"><div class="brand">🌱 まなびのにわ</div><button class="mini" data-action="'+(back||'home')+'">⌂ もどる</button></header>'}
-function shell(content){var bg=screen==='adventure'?' adventure-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})})}
+function shell(content){var bg=screen==='adventure'?' adventure-stage':screen==='free'?' free-garden-stage':'';var style=screen==='adventure'?' style="--adventure-bg:url(\'./assets/scene-'+sceneNames[step]+'.svg\')"':'';app.innerHTML='<section class="stage'+bg+'"'+style+'>'+content+'</section>';app.querySelectorAll('[data-action]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.action,b.dataset.value)})})}
 function navhome(){screen='home';feedback='';render()}
 function start(){screen='adventure';step=0;apples=0;maze=0;feedback='';render();speak('うさぎさんと りんごを とどけよう')}
 function go(n){step=n;feedback='';render();speak(prompts[n])}
@@ -144,7 +158,7 @@ if(step===4)body='<img class="story-art" src="./assets/rabbit.svg" alt="うさ�
 if(step===5)body='<div class="scene">🎉 🍎 🌷</div>'+ '<p class="lead">りんごを とどけられたね！</p><p class="sub">おみせやさんでも りんごを かぞえてみよう</p><div class="actions"><button class="primary" data-action="free">おみせやさんへ</button><button class="secondary" data-action="home">おうちへ</button></div>';
 shell(header('home')+'<div class="center"><h1 class="title">🍎 はじめての ぼうけん</h1>'+bar+'<div class="adventure-hero"><img class="guide-rabbit" src="./assets/rabbit-'+sceneNames[step]+'.svg" alt="いっしょに ぼうけんする うさぎ"><div class="guide-message">'+guideLines[step]+'</div></div><div class="card"><div class="scene-label">'+(step+1)+' / 6</div><div class="lead">'+prompts[step]+'</div>'+body+'<div class="hint" role="status">'+feedback+'</div></div></div>');
 if(step===4)initCanvas();return}
-if(screen==='free'){shell(header()+'<div class="center"><h1 class="title">🌷 じゆうあそびのにわ</h1><div class="bubble">すきな あそびを えらんでね！</div><div class="home-grid"><button class="tile" data-action="shop"><span class="pic">🍎</span>おみせやさん</button><button class="tile" data-action="soon"><span class="pic">✉️</span>おてがみ</button><button class="tile" data-action="soon"><span class="pic">🧩</span>めいろ</button></div><p class="sub">おみせやさんは さいしょから あそべるよ</p></div>');return}
+if(screen==='free'){shell('<div class="free-garden"><button class="free-back" data-action="home" aria-label="もどる">もどる</button><div class="free-choices"><button class="free-choice" data-action="shop" aria-label="おみせやさん"><span class="free-choice-label">おみせやさん</span></button><button class="free-choice" data-action="coming-craft" aria-label="つくってあそぼう"><span class="free-choice-label">つくってあそぼう</span></button><button class="free-choice" data-action="coming-games" aria-label="ミニゲーム"><span class="free-choice-label">ミニゲーム</span></button></div>'+(feedback?'<div class="free-pending" role="status">'+feedback+'</div>':'')+'</div>');return}
 if(screen==='shop'){shell(header('free')+'<div class="center"><h1 class="title">🏪 おみせやさん</h1><img class="story-art" src="./assets/shop.svg" alt="くだものやさん"><div class="bubble">🐿️ いらっしゃいませ！ なにに する？</div><div class="card"><div class="shop-items">'+[['🍎','りんご'],['🍌','ばなな'],['🍊','みかん']].map(function(a,i){return '<button class="shop-item '+(selected===i?'selected':'')+'" data-action="select" data-value="'+i+'"><span class="pic">'+a[0]+'</span>'+a[1]+'</button>'}).join('')+'</div><p class="lead">いくつ ほしい？</p><div class="grid"><button class="choice" data-action="minus">−</button><span class="counter" style="align-self:center">'+shopCount+' こ</span><button class="choice" data-action="plus">＋</button></div><div class="grid big">'+[['🍎','🍌','🍊'][selected]].map(function(a){return a.repeat(shopCount)}).join(' ')+'</div><div class="actions"><button class="primary" data-action="buy">これを ください！</button></div><div class="hint">'+feedback+'</div></div><p class="sub">ぼうけんのあとも、すきな かずで あそべるよ</p></div>');return}
 if(screen==='family'){shell(header()+'<div class="center"><h1 class="title">🏡 かぞくのにわ</h1><div class="bubble">おうちでも いっしょに あそぼう！</div><div class="home-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="tile" data-action="guide"><span class="pic">📖</span>あそびかたガイド</button><button class="tile" data-action="worksheet"><span class="pic">🖍️</span>プリントあそび</button></div></div>');return}
 if(screen==='guide'){shell(header('family')+'<div class="center"><h1 class="title">📖 おうちで あそぼう</h1><div class="card"><img class="bunny-art" src="./assets/rabbit.svg" alt="みどりのスカーフをまいた うさぎ"><p class="lead">りんごを 3こ かぞえてみよう！</p><p class="sub">おやつを3個お皿に並べたり、家族に「3個ください」とお願いしてみよう。<br>実物の硬貨を使う遊びは、もう少し大きくなってからでも大丈夫。</p><div class="actions"><button class="primary" data-action="worksheet">プリントでも あそぶ</button></div></div></div>');return}
@@ -156,7 +170,7 @@ if(a==='home')return navhome();
 if(a==='voice'){speak('きょうは なにして あそぼうか？');return}
 if(a==='start')return start();
 if(a==='free'||a==='family'||a==='shop'||a==='guide'||a==='worksheet'){screen=a;feedback='';render();return}
-if(a==='soon'){speak('この あそびは じゅんびちゅうだよ');return}
+if(a==='soon'||a==='coming-craft'||a==='coming-games'){feedback='この あそびは じゅんびちゅうだよ 🌷';render();speak('この あそびは じゅんびちゅうだよ');return}
 if(a==='letter'){if(v==='り')return go(1);feedback='もういちど さがしてみよう';render();return}
 if(a==='apple'){if(Number(v)!==apples+1){feedback='ひとつずつ あつめよう';render();return}apples++;if(apples===3)return go(2);render();speak(apples+'こ');return}
 if(a==='maze'){var path=[0,4,8,9,10,14];if(Number(v)!==path[maze])return;maze++;if(maze===path.length)return go(3);render();return}
