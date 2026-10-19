@@ -16,7 +16,7 @@ button:disabled{opacity:.48;cursor:default}.home{position:absolute;inset:0;backg
 <script>
 (function(){
 'use strict';
-var app=document.getElementById('app'),screen='home',step=0,fish=0,path=0,feedback='',chosen=0,quantity=1,basket=[],shopDone=false,drag=null,ignoreClick=false,traceCtx=null;
+var app=document.getElementById('app'),screen='home',step=0,fish=0,path=0,feedback='',chosen=0,quantity=1,basket=[],shopDone=false,drag=null,ignoreClick=false,traceCtx=null,carry=0;
 var animals=['🐟','🐠','🐬','🐢','🦀'],names=['おさかな','カラフルな さかな','いるか','かめ','かに'];
 function say(t){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.82;speechSynthesis.speak(u)}catch(e){}}
 function html(s){app.innerHTML='<section class="stage">'+s+'</section>';app.querySelectorAll('[data-a]').forEach(function(b){b.addEventListener('click',function(){action(b.dataset.a,b.dataset.v)})})}
@@ -46,9 +46,9 @@ if(screen==='guide'){page('📖 あそびかたガイド','family','<div class="
 if(screen==='worksheet'){page('🖍️ プリントあそび','family','<div class="scene"><div class="big-art">🐧 🖍️</div><div class="bubble">「う」を なぞって、おさかなを かぞえる A4プリント！</div>'+btn('print','','A4で いんさつ','green')+'</div>');return}
 }
 function initTrace(){var c=document.getElementById('trace');if(!c)return;var ctx=c.getContext('2d');ctx.fillStyle='#c8d9e1';ctx.textAlign='center';ctx.font='bold 190px sans-serif';ctx.fillText('う',280,185);ctx.strokeStyle='#488db1';ctx.lineWidth=13;ctx.lineCap='round';ctx.lineJoin='round';var down=false;function pos(e){var r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}}c.addEventListener('pointerdown',function(e){down=true;c.setPointerCapture(e.pointerId);var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y)});c.addEventListener('pointermove',function(e){if(!down)return;var p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke()});c.addEventListener('pointerup',function(){down=false});c.addEventListener('pointercancel',function(){down=false})}
-function initDrag(){var drop=document.getElementById('drop'),ghost=document.getElementById('ghost');app.querySelectorAll('.fruit').forEach(function(el){el.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;ignoreClick=false;drag={id:Number(el.dataset.v),pid:e.pointerId,x:e.clientX,y:e.clientY,moved:false};el.setPointerCapture(e.pointerId)});el.addEventListener('pointermove',function(e){if(!drag||drag.pid!==e.pointerId)return;if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8)drag.moved=true;if(!drag.moved)return;e.preventDefault();ghost.style.display='block';ghost.textContent=animals[drag.id];ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';var r=drop.getBoundingClientRect();drop.classList.toggle('over',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)});el.addEventListener('pointerup',function(e){if(!drag||drag.pid!==e.pointerId)return;var d=drag;drag=null;ghost.style.display='none';drop.classList.remove('over');if(!d.moved)return;ignoreClick=true;var r=drop.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){chosen=d.id;basket.push({id:d.id,count:1});render();say('1こ かごに はいったよ')}});el.addEventListener('pointercancel',function(){drag=null;ghost.style.display='none';drop.classList.remove('over')})})}
+function initDrag(){var drop=document.getElementById('drop'),ghost=document.getElementById('ghost');app.querySelectorAll('.fruit').forEach(function(el){el.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;ignoreClick=false;drag={id:Number(el.dataset.v),pid:e.pointerId,x:e.clientX,y:e.clientY,moved:false};el.setPointerCapture(e.pointerId)});el.addEventListener('pointermove',function(e){if(!drag||drag.pid!==e.pointerId)return;if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8)drag.moved=true;if(!drag.moved)return;e.preventDefault();ghost.style.display='block';ghost.textContent=animals[drag.id];ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';var r=drop.getBoundingClientRect();drop.classList.toggle('over',e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)});el.addEventListener('pointerup',function(e){if(!drag||drag.pid!==e.pointerId)return;var d=drag;drag=null;ghost.style.display='none';drop.classList.remove('over');if(!d.moved)return;ignoreClick=true;var r=drop.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){if(chosen!==d.id)carry=0;chosen=d.id;carry++;if(carry>=quantity){basket.push({id:d.id,count:quantity});carry=0;say(quantity+'こ かごに はいったよ')}else say(carry+'こ');render()}});el.addEventListener('pointercancel',function(){drag=null;ghost.style.display='none';drop.classList.remove('over')})})}
 function action(a,v){
-if(a==='home'||a==='free'||a==='family'||a==='guide'||a==='worksheet'||a==='shop'||a==='countgame'||a==='findgame'){screen=a;feedback='';if(a==='shop'){basket=[];quantity=1;chosen=0}render();return}
+if(a==='home'||a==='free'||a==='family'||a==='guide'||a==='worksheet'||a==='shop'||a==='countgame'||a==='findgame'){screen=a;feedback='';if(a==='shop'){basket=[];quantity=1;chosen=0;carry=0}render();return}
 if(a==='explore'){start();return}
 if(a==='letter'){if(v==='う')goto(1);else{feedback='もういちど さがそう！';render()}return}
 if(a==='fish'){if(Number(v)!==fish+1)return;fish++;if(fish===3)goto(2);else{render();say(fish+'びき')}return}
@@ -58,10 +58,10 @@ if(a==='clear'){render();return}
 if(a==='finish'){goto(5);return}
 if(a==='count-answer'){if(Number(v)===window.__oceanCount){feedback='せいかい！ すごいね！';say(feedback);setTimeout(function(){if(screen==='countgame'){feedback='';render()}},1100)}else{feedback='もういちど かぞえよう！';say(feedback)}var el=app.querySelector('.status');if(el)el.textContent=feedback;return}
 if(a==='find-answer'){if(Number(v)===window.__oceanTarget){feedback='みつけた！ すごいね！';say(feedback);setTimeout(function(){if(screen==='findgame'){feedback='';render()}},1100)}else{feedback='もういちど さがしてみよう！';say(feedback)}var st=app.querySelector('.status');if(st)st.textContent=feedback;return}
-if(a==='pick'){if(ignoreClick){ignoreClick=false;return}chosen=Number(v);render();say(names[chosen]);return}
-if(a==='qty'){quantity=Number(v);render();say(quantity+'こ');return}
-if(a==='add'){basket.push({id:chosen,count:quantity});render();say(quantity+'こ かごに はいったよ');return}
-if(a==='reset'){basket=[];quantity=1;render();return}
+if(a==='pick'){if(ignoreClick){ignoreClick=false;return}chosen=Number(v);carry=0;render();say(names[chosen]);return}
+if(a==='qty'){quantity=Number(v);carry=0;render();say(quantity+'こ');return}
+if(a==='add'){basket.push({id:chosen,count:quantity});carry=0;render();say(quantity+'こ かごに はいったよ');return}
+if(a==='reset'){basket=[];quantity=1;carry=0;render();return}
 if(a==='checkout'){if(!basket.length){say('かごに いれてね');return}screen='thanks';render();say('おかいもの できたね！');return}
 if(a==='print'){window.print();return}
 }
