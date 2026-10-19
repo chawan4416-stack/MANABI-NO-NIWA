@@ -294,6 +294,7 @@ function initMarketDrag(){
  app.querySelectorAll('.market-fruit').forEach(function(btn){
   btn.addEventListener('pointerdown',function(e){
    if(marketDone)return;
+   suppressFruitClick=false;
    if(e.pointerType==='mouse'&&e.button!==0)return;
    var id=Number(btn.dataset.value);
    marketDrag={id:id,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
