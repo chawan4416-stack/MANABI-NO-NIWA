@@ -14,6 +14,36 @@ button:disabled{opacity:.48;cursor:default}.home{position:absolute;inset:0;backg
 .home.has-art .home-choice:first-child{color:transparent}
 .stage:after{content:"🫧";position:absolute;left:6%;bottom:-15%;font-size:clamp(25px,5vw,62px);opacity:.32;pointer-events:none;animation:float-bubble 13s linear infinite;z-index:1}.panel,.home{z-index:2}.panel{isolation:isolate}@keyframes float-bubble{0%{transform:translateY(0) rotate(-10deg);opacity:0}12%{opacity:.25}80%{opacity:.25}100%{transform:translate(65px,-110vh) rotate(20deg);opacity:0}}@media(prefers-reduced-motion:reduce){.stage:after{animation:none;display:none}}
 .game-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,1.6vw,16px);width:min(94%,600px)}.match-tile{min-height:clamp(60px,10vh,105px);border:4px solid #fff7de;border-radius:20px;background:#a6d8e9;font-size:clamp(28px,5vw,60px);box-shadow:0 4px #72a8bc}.match-tile.open{background:#fff9e9}.match-tile.done{background:#d8f2d4;border-color:#b2dca8}.family-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:min(100%,800px)}.family-stat{padding:14px 7px;border-radius:20px;background:#fff9e9e8;border:3px solid #fff;font-weight:900;font-size:clamp(14px,2vw,24px)}.family-stat strong{display:block;font-size:clamp(23px,4vw,48px);color:#1b80a6}.print-choice{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.print-choice .btn{min-width:clamp(90px,14vw,170px)}.card-btn{transition:transform .12s ease}.card-btn:active{transform:scale(.96)}@media(max-width:680px){.family-stats{gap:5px}.family-stat{padding:6px 2px}}
+
+/* Ver 1.7: unified picture-book presentation across all three areas */
+.panel{background:radial-gradient(ellipse at 50% -10%,#f8ffffee 0%,#c5eff6ed 58%,#8bcfd8f0 100%),linear-gradient(150deg,#a4e3ef,#d7f5eb);gap:clamp(7px,1.3vh,16px)}
+.panel:before{content:"";position:absolute;inset:auto -4% -8% -4%;height:25%;background:radial-gradient(ellipse at 10% 95%,#ffb6b9b0 0 10%,transparent 11%),radial-gradient(ellipse at 90% 100%,#ffdc9eb0 0 11%,transparent 12%),radial-gradient(ellipse at 50% 110%,#a8e2c8aa 0 29%,transparent 30%);pointer-events:none;z-index:-1}
+.panel-head{padding:clamp(3px,.6vh,9px) clamp(5px,1vw,14px);border-radius:clamp(15px,2vw,26px);background:#ffffff91;border:2px solid #fffdf1b0;box-shadow:0 4px 15px #3e8eaa17}
+.heading{font-size:clamp(20px,3vw,36px);letter-spacing:.015em;color:#166b88;text-shadow:0 2px 0 #fff}
+.back{background:#fff9e7;border:3px solid #fff;box-shadow:0 3px 0 #d9cba9;min-width:clamp(92px,12vw,145px);min-height:clamp(43px,6vh,58px)}
+.back:active{transform:translateY(2px);box-shadow:none}
+.scene{position:relative;gap:clamp(8px,1.8vh,18px)}
+.bubble{border:3px solid #fffaf0;background:#fffdf4f2;box-shadow:0 4px 12px #3383a31c;max-width:94%;text-wrap:balance}
+.cards{gap:clamp(8px,1.35vw,17px);max-width:900px}
+.card-btn{position:relative;min-height:clamp(108px,18vh,190px);padding:clamp(7px,1.5vw,18px) 8px;line-height:1.25;border:clamp(3px,.4vw,5px) solid #fffdf0;background:linear-gradient(155deg,#fffef7,#ffe9dc);box-shadow:0 6px 0 #d5aeb1,0 11px 20px #437f991a;border-radius:clamp(17px,2.5vw,30px);font-size:clamp(15px,2.2vw,26px);overflow-wrap:anywhere}
+.card-btn:nth-child(3n+2){background:linear-gradient(155deg,#ffffff,#d6f0fb);box-shadow:0 6px 0 #9cc5d9,0 11px 20px #437f991a}
+.card-btn:nth-child(3n){background:linear-gradient(155deg,#fffef7,#dcf2d7);box-shadow:0 6px 0 #a8c9a0,0 11px 20px #437f991a}
+.card-btn .emoji{font-size:clamp(35px,6vw,72px);line-height:1.1;margin-bottom:clamp(3px,.8vh,10px);filter:drop-shadow(0 3px 2px #366d8030)}
+.card-btn:active{transform:translateY(4px) scale(.985);box-shadow:0 2px 0 #98b9b5}
+.btn{background:linear-gradient(180deg,#fffdf6,#ffe8c6);border:3px solid #fffef5;box-shadow:0 5px 0 #d4b38d,0 7px 12px #3c8da321;transition:transform .12s ease;min-height:clamp(49px,7vh,78px)}
+.btn.primary{background:linear-gradient(180deg,#87c8ef,#5c9ed2);box-shadow:0 5px 0 #427ca9;color:#fff}
+.btn.green{background:linear-gradient(180deg,#a4db9d,#72b78b);box-shadow:0 5px 0 #569a6b;color:#fff}
+.btn.chosen{background:linear-gradient(180deg,#fff8ca,#ffe48d);border-color:#fff}
+.progress{gap:clamp(8px,1.2vw,15px);padding:2px}
+.progress span{width:clamp(14px,2vw,23px);border:3px solid #fffef0;box-shadow:0 2px 4px #387b9226}
+.progress span.on{background:#ffbb66;box-shadow:0 0 0 3px #ffe8aa70}
+.big-art{filter:drop-shadow(0 7px 4px #4d7c8740);text-shadow:0 3px 0 #ffffff66}
+.trace{box-shadow:0 7px 16px #367b9120;border:4px dashed #83bdd0;background:linear-gradient(#fffefb,#f2fbff)}
+.family-note{max-width:min(95%,830px);font-size:clamp(14px,1.8vw,22px);line-height:1.55;border:3px solid #fff9e9;box-shadow:0 5px 14px #3a839321}
+.sticker{box-shadow:0 4px 10px #35788c20}
+.match-tile{box-shadow:0 5px 0 #7ab1c3}
+@media(max-height:650px) and (orientation:landscape){.panel{padding:2% 3%;gap:5px}.scene{gap:6px}.card-btn{min-height:clamp(85px,17vh,135px);padding:5px;font-size:clamp(13px,2vw,21px)}.card-btn .emoji{font-size:clamp(30px,5vw,55px)}.bubble{padding:5px 11px}.big-art{font-size:clamp(40px,7vw,80px)}.btn{min-height:45px;padding:4px 12px}.family-note{font-size:clamp(12px,1.6vw,18px)}}
+@media(prefers-reduced-motion:reduce){.btn,.card-btn{transition:none}}
 .celebrate-layer{position:absolute;inset:0;pointer-events:none;z-index:30;overflow:hidden}.celebrate-bit{position:absolute;top:-10%;left:var(--x);font-size:clamp(19px,3vw,38px);animation:ocean-fall var(--d) ease-in forwards;animation-delay:var(--delay);filter:drop-shadow(0 2px 2px #28516b33)}@keyframes ocean-fall{0%{transform:translateY(-10%) rotate(0deg) scale(.6);opacity:0}12%{opacity:1}85%{opacity:1}100%{transform:translate(var(--drift),92vh) rotate(var(--spin)) scale(1.2);opacity:0}}.happy-pop{animation:happy-pop .5s ease-out}@keyframes happy-pop{0%{transform:scale(.92)}50%{transform:scale(1.07)}100%{transform:scale(1)}}.gentle-shake{animation:gentle-shake .36s ease-in-out}@keyframes gentle-shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-6px)}65%{transform:translateX(6px)}}@media(prefers-reduced-motion:reduce){.celebrate-bit,.happy-pop,.gentle-shake{animation:none}.celebrate-layer{display:none}}
 </style></head><body><main id="app" aria-live="polite"></main><section class="print-sheet"><h1 id="print-title">🐧 まなびのうみ　たんけんプリント</h1><p>なまえ：＿＿＿＿＿＿＿＿＿　ひづけ：＿＿＿＿＿＿＿＿</p><h2 id="print-letter-title">① もじを なぞろう</h2><div class="trace-letter" id="print-letters">う　う　う</div><div class="line"></div><h2 id="print-count-title">② いくつ あるかな？</h2><div class="print-fish" id="print-animals">🐟 🐟 🐟</div><p style="font-size:25pt">１　２　３　４　５</p><h2 id="print-draw-title">③ うみの なかまを かこう</h2><div style="height:170px;border:2px dashed #aaa;border-radius:16px"></div><p>ペンギンと いっしょに よくできたね！ 💮</p></section>
 <script>
